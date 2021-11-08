@@ -14,7 +14,7 @@ import { GiWallet } from "react-icons/gi";
 import { fetchUser } from "../Redux/actions/action";
 import Transactions from "../components/Transactions";
 import BottomNav from "../components/BottomNav";
-const Dashboard: React.FC = () => {
+const BuyAirtime: React.FC = () => {
   const state = useSelector((state: any) => state);
   console.log(state.user.balance);
 
@@ -74,4 +74,4 @@ const Dashboard: React.FC = () => {
   );
 };
 
-export default Dashboard;
+export default BuyAirtime;

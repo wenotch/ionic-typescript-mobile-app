@@ -29,12 +29,14 @@ import Dashboard from "./pages/Dashboard";
 import history from "./history";
 import ProtectedRoute from "./components/ProtectedComponent";
 import BottomNav from "./components/BottomNav";
+import BuyAirtime from "./pages/BuyAirtime";
 const App: React.FC = () => {
   return (
     <IonApp>
       <IonReactRouter history={history}>
         <IonSplitPane contentId="main">
-          {/* <BottomNav /> */}
+          <BottomNav />
+          {/* <h1 style={{ fontSize: "200px" }}>Hello</h1> */}
           <IonRouterOutlet id="main">
             <Route path="/" exact={true}>
               <Redirect to="/login" />
@@ -43,7 +45,9 @@ const App: React.FC = () => {
             <Route path="/login" exact={true}>
               <Login />
             </Route>
-
+            <Route path="/buy-airtime" exact={true}>
+              <BuyAirtime />
+            </Route>
             <Route path="/forgot" exact={true}>
               <ForgotPassword />
             </Route>
