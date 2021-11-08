@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { GiWallet } from "react-icons/gi";
 import { fetchUser } from "../Redux/actions/action";
 import Transactions from "../components/Transactions";
+import BottomNav from "../components/BottomNav";
 const Dashboard: React.FC = () => {
   const state = useSelector((state: any) => state);
   console.log(state.user.balance);
@@ -48,7 +49,7 @@ const Dashboard: React.FC = () => {
 
           <QuickLinks />
 
-          <Box px="30px" mt="15px">
+          <Box px="30px" mt="15px" pb="11vh">
             <Text fontWeight="medium" fontSize="lg">
               Recent transactions
             </Text>
@@ -65,6 +66,8 @@ const Dashboard: React.FC = () => {
               transactionId="556456848"
             />
           </Box>
+
+          <BottomNav />
         </Box>
       </IonContent>
     </IonPage>

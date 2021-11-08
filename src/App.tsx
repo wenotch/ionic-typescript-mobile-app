@@ -28,12 +28,13 @@ import Verification from "./pages/Verification";
 import Dashboard from "./pages/Dashboard";
 import history from "./history";
 import ProtectedRoute from "./components/ProtectedComponent";
-
+import BottomNav from "./components/BottomNav";
 const App: React.FC = () => {
   return (
     <IonApp>
       <IonReactRouter history={history}>
         <IonSplitPane contentId="main">
+          {/* <BottomNav /> */}
           <IonRouterOutlet id="main">
             <Route path="/" exact={true}>
               <Redirect to="/login" />

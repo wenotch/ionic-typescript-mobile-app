@@ -11,6 +11,8 @@ interface Props {
   type: String;
   transactionId: String;
 }
+
+
 const Transactions: React.FC<Props> = ({
   details,
   amount,
