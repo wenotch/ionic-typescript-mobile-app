@@ -17,7 +17,10 @@ function Navbar() {
       mb="30px"
     >
       <Box width="50%">
-        <Text color="#046494">Hi {`${state.user.firstName}`}</Text>
+        <Text color="#046494">
+          Hi{" "}
+          {state.user.length === 0 ? "loading" : state.user[0].owner.firstName}
+        </Text>
       </Box>
       <Image width="25%" src={`${paygo}`} alt="paygo logo" />
     </Flex>
