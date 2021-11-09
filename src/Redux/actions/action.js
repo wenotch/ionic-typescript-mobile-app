@@ -58,3 +58,31 @@ export const fetchUser = () => {
       });
   };
 };
+
+//fetch airtime
+
+export const fetchBills = () => {
+  return async (dispatch, getState) => {
+    const options = {
+      url: baseUrl + "/bills",
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json;charset=UTF-8",
+        authorization: window.localStorage.getItem("accessToken"),
+      },
+    };
+
+    Axios(options)
+      .then((response) => {
+        dispatch({
+          type: "BILLS",
+          payload: response.data,
+        });
+        // toast.success("Bills fetched successfully");
+      })
+      .catch((error) => {
+        toast.error("Something went wrong");
+      });
+  };
+};

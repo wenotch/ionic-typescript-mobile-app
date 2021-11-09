@@ -24,6 +24,7 @@ const BottomNav: React.FC = () => {
         <Box
           justify="center"
           textAlign="center"
+          routerDirection="none"
           //   color="#046494"
           color="grey"
           p="5px"

@@ -35,8 +35,8 @@ const App: React.FC = () => {
     <IonApp>
       <IonReactRouter history={history}>
         <IonSplitPane contentId="main">
-          <BottomNav />
-          {/* <h1 style={{ fontSize: "200px" }}>Hello</h1> */}
+          {/* <BottomNav /> */}
+
           <IonRouterOutlet id="main">
             <Route path="/" exact={true}>
               <Redirect to="/login" />

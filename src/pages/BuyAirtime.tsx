@@ -1,25 +1,55 @@
-import { Image } from "@chakra-ui/image";
-import { useHistory } from "react-router-dom";
 import Icon from "@chakra-ui/icon";
 import { IonContent, IonPage } from "@ionic/react";
 import React from "react";
-import logo from "../images/paygo.png";
-import { useState, useEffect } from "react";
-import { chakra, Box, Text } from "@chakra-ui/react";
-import { FaUserAlt, FaLock } from "react-icons/fa";
+import { useEffect } from "react";
+import { Box, Text } from "@chakra-ui/react";
 import Navbar from "../components/Navbar";
-import QuickLinks from "../components/QuickLinks";
 import { useDispatch, useSelector } from "react-redux";
 import { GiWallet } from "react-icons/gi";
-import { fetchUser } from "../Redux/actions/action";
-import Transactions from "../components/Transactions";
-import BottomNav from "../components/BottomNav";
+import { fetchBills, fetchUser } from "../Redux/actions/action";
+import { Field, Form, Formik } from "formik";
+import {
+  FormControl,
+  FormLabel,
+  FormErrorMessage,
+} from "@chakra-ui/form-control";
+import { Input, InputGroup, InputRightElement } from "@chakra-ui/input";
+import { Button } from "@chakra-ui/button";
 const BuyAirtime: React.FC = () => {
   const state = useSelector((state: any) => state);
-  console.log(state.user.balance);
+
+  console.log(state.bills);
+  function validateNetwork(value: any) {
+    let error;
+    if (!value) {
+      error = "Network is required";
+    }
+    return error;
+  }
+
+  function validatePhone(value: any) {
+    let error;
+    if (!value) {
+      error = "Phone Number is required";
+    } else if (value < 0) {
+      error = "Not a valid phone number";
+    }
+    return error;
+  }
+  function validateAmount(value: any) {
+    let error;
+    if (!value) {
+      error = "Amount is required";
+    }
+    // else if (state.user.length !== 0 && value > state.user[0].balance) {
+    //   error = "You do not have that amount in your wallet";
+    // }
+    return error;
+  }
 
   const dispatch = useDispatch();
   useEffect(() => {
+    dispatch(fetchBills());
     dispatch(fetchUser());
   }, []);
   return (
@@ -47,27 +77,127 @@ const BuyAirtime: React.FC = () => {
             </Text>
           </Box>
 
-          <QuickLinks />
-
-          <Box px="30px" mt="15px" pb="11vh">
-            <Text fontWeight="medium" fontSize="lg">
-              Recent transactions
+          <Box w={{ base: "100%", md: "468px" }} bg="white" mt="50px" px="30px">
+            <Text
+              textAlign="center"
+              fontWeight="semibold"
+              color="#046494"
+              mb="10px"
+              fontSize="xl"
+            >
+              Buy Airtime
             </Text>
-            <Transactions
-              details="you sent airtime to 08130270190"
-              type="debit"
-              amount={2000}
-              transactionId="556456848"
-            />{" "}
-            <Transactions
-              details="you sent airtime to 08130270190"
-              type="debit"
-              amount={2000}
-              transactionId="556456848"
-            />
-          </Box>
+            <Formik
+              initialValues={{}}
+              onSubmit={(values, actions) => {
+                setTimeout(() => {
+                  alert(JSON.stringify(values, null, 2));
+                  actions.setSubmitting(false);
+                }, 1000);
+              }}
+            >
+              {(props) => (
+                <Form>
+                  <Field name="network" validate={validateNetwork}>
+                    {({ field, form }: any) => (
+                      <FormControl
+                        mt="20px"
+                        isInvalid={form.errors.network && form.touched.network}
+                      >
+                        <FormLabel htmlFor="network" color="#2D5363">
+                          {" "}
+                          Network{" "}
+                        </FormLabel>
+                        <Input
+                          bg="#D5D5D5"
+                          _placeholder={{ color: "#2D5363" }}
+                          {...field}
+                          id="network"
+                          placeholder="Select Network"
+                          type="text"
+                        />
+                        <FormErrorMessage>
+                          {form.errors.network}
+                        </FormErrorMessage>
+                      </FormControl>
+                    )}
+                  </Field>
 
-          {/* <BottomNav /> */}
+                  <Field name="phone" validate={validatePhone}>
+                    {({ field, form }: any) => (
+                      <FormControl
+                        mt="20px"
+                        isInvalid={form.errors.phone && form.touched.phone}
+                      >
+                        <FormLabel htmlFor="phone" color="#2D5363">
+                          {" "}
+                          Phone Number{" "}
+                        </FormLabel>
+
+                        <InputGroup size="md">
+                          <Input
+                            bg="#D5D5D5"
+                            {...field}
+                            id="phone"
+                            pr="4.5rem"
+                            type={"number"}
+                            placeholder="Enter phone number"
+                          />
+                        </InputGroup>
+                        <FormErrorMessage>{form.errors.phone}</FormErrorMessage>
+                      </FormControl>
+                    )}
+                  </Field>
+                  <Field name="amount" validate={validateAmount}>
+                    {({ field, form }: any) => (
+                      <FormControl
+                        mt="20px"
+                        isInvalid={form.errors.amount && form.touched.amount}
+                      >
+                        <FormLabel htmlFor="amount" color="#2D5363">
+                          {" "}
+                          Amount{" "}
+                        </FormLabel>
+
+                        <InputGroup size="md">
+                          <Input
+                            bg="#D5D5D5"
+                            {...field}
+                            id="amount"
+                            pr="4.5rem"
+                            type={"number"}
+                            placeholder="Enter amount"
+                          />
+                        </InputGroup>
+                        <FormErrorMessage>
+                          {form.errors.amount}
+                        </FormErrorMessage>
+                      </FormControl>
+                    )}
+                  </Field>
+                  <Box textAlign="center" w="full">
+                    <Button
+                      mt={4}
+                      colorScheme="blue"
+                      bg="#046494"
+                      isLoading={props.isSubmitting}
+                      type="submit"
+                      size="md"
+                      color="white"
+                      fontWeight="medium"
+                      rounded="sm"
+                      justify="center"
+                      align="center"
+                      py="0px"
+                      px="30px"
+                    >
+                      Next
+                    </Button>
+                  </Box>
+                </Form>
+              )}
+            </Formik>
+          </Box>
         </Box>
       </IonContent>
     </IonPage>

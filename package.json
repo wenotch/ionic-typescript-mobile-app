@@ -23,6 +23,7 @@
     "@types/react-router": "^5.1.11",
     "@types/react-router-dom": "^5.1.7",
     "axios": "^0.24.0",
+    "formik": "^2.2.9",
     "framer-motion": "^4",
     "ionicons": "^5.4.0",
     "react": "^17.0.1",

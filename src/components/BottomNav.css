@@ -1,4 +1,5 @@
 a.active {
   color: "red !important";
-  background: #BEE3F8;
+  background: #bee3f8;
+  border-radius: 5px;
 }

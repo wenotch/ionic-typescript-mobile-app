@@ -1,5 +1,6 @@
 import React from "react";
 import { Redirect, Route } from "react-router-dom";
+import BottomNav from "./BottomNav";
 
 function ProtectedRoute({ component: Component, ...restOfProps }) {
   const accessToken = window.localStorage.getItem("accessToken");
@@ -9,7 +10,13 @@ function ProtectedRoute({ component: Component, ...restOfProps }) {
     <Route
       {...restOfProps}
       render={(props) =>
-        accessToken ? <Component {...props} /> : <Redirect to="/login" />
+        accessToken ? (
+          <>
+            <Component {...props} /> <BottomNav />
+          </>
+        ) : (
+          <Redirect to="/login" />
+        )
       }
     />
   );
