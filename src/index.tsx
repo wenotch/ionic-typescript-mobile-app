@@ -20,7 +20,7 @@ ReactDOM.render(
     <ChakraProvider>
       <Provider store={store}>
         <App />
-        <Toaster />;
+        <Toaster />
       </Provider>
     </ChakraProvider>
   </React.StrictMode>,

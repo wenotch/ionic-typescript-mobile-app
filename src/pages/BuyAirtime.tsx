@@ -1,8 +1,8 @@
 import Icon from "@chakra-ui/icon";
 import { IonContent, IonPage } from "@ionic/react";
 import React from "react";
-import { useEffect } from "react";
-import { Box, Text } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
+import { Box, Text, HStack, Flex } from "@chakra-ui/react";
 import Navbar from "../components/Navbar";
 import { useDispatch, useSelector } from "react-redux";
 import { GiWallet } from "react-icons/gi";
@@ -15,10 +15,36 @@ import {
 } from "@chakra-ui/form-control";
 import { Input, InputGroup, InputRightElement } from "@chakra-ui/input";
 import { Button } from "@chakra-ui/button";
-const BuyAirtime: React.FC = () => {
-  const state = useSelector((state: any) => state);
+import axios from "axios";
+import { Select } from "@chakra-ui/select";
+import toast from "react-hot-toast";
+import {
+  ModalCloseButton,
+  ModalOverlay,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+} from "@chakra-ui/modal";
+import { useDisclosure } from "@chakra-ui/hooks";
+import { PinInput, PinInputField } from "@chakra-ui/pin-input";
+import { dispatch } from "react-hot-toast/dist/core/store";
 
-  console.log(state.bills);
+const BuyAirtime: React.FC = () => {
+  // all my states
+  const state = useSelector((state: any) => state);
+  //filters all possible by aitime providers from bills list in the redux store
+  const bills = state.bills;
+  var airtimeList: any = [];
+  if (state.bills.length !== 0) {
+    bills.map((item: any) => {
+      if (item.item_code === "AT099" && item.country === "NG") {
+        airtimeList.push(item);
+      }
+    });
+  }
+
+  // my form validations
   function validateNetwork(value: any) {
     let error;
     if (!value) {
@@ -40,6 +66,8 @@ const BuyAirtime: React.FC = () => {
     let error;
     if (!value) {
       error = "Amount is required";
+    } else if (value < 100) {
+      error = "Min amount is N100";
     }
     // else if (state.user.length !== 0 && value > state.user[0].balance) {
     //   error = "You do not have that amount in your wallet";
@@ -52,20 +80,18 @@ const BuyAirtime: React.FC = () => {
     dispatch(fetchBills());
     dispatch(fetchUser());
   }, []);
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  var [transactionValues, settransactionValues] = useState({});
+  const handleSizeClick = () => {
+    onOpen();
+  };
   return (
     <IonPage>
       <IonContent fullscreen>
         <Box width="100%" h="100vh" bg="white">
           <Navbar />
-          <Text
-            px="30px"
-            fontWeight="normal"
-            color="#046494"
-            fontSize="14px"
-            mt="5px"
-          >
-            {/* Wallet ID {state.user.phoneNumber} 08130270190 */}
-          </Text>
+
           <Box bg="#046494" mx="30px" px="50px" py="30px" rounded="lg">
             <Icon as={GiWallet} w={8} h={8} color="#fff" mb="2px" />
             <Text cfontWeight="normal" color="white" fontSize="14px">
@@ -76,7 +102,6 @@ const BuyAirtime: React.FC = () => {
               N{state.user.length === 0 ? "loading" : state.user[0].balance}
             </Text>
           </Box>
-
           <Box w={{ base: "100%", md: "468px" }} bg="white" mt="50px" px="30px">
             <Text
               textAlign="center"
@@ -89,11 +114,34 @@ const BuyAirtime: React.FC = () => {
             </Text>
             <Formik
               initialValues={{}}
-              onSubmit={(values, actions) => {
-                setTimeout(() => {
-                  alert(JSON.stringify(values, null, 2));
-                  actions.setSubmitting(false);
-                }, 1000);
+              onSubmit={async (values: any, actions) => {
+                settransactionValues({});
+                const data = airtimeList.filter((item: any) => {
+                  return item.name === values.network;
+                });
+                settransactionValues({ ...data[0], ...values });
+                const headers: any = {
+                  Accept: "application/json",
+                  "Content-Type": "application/json;charset=UTF-8",
+                  authorization: window.localStorage.getItem("accessToken"),
+                };
+                const response = await axios.get(
+                  "https://paygo.gitit-tech.com/bills/" +
+                    data[0].item_code +
+                    "/" +
+                    data[0].biller_code +
+                    "/" +
+                    values.phone,
+                  {
+                    headers: headers,
+                  }
+                );
+                if (response.data.message === "Item validated successfully") {
+                  onOpen();
+                } else {
+                  toast.error(response.data.message);
+                }
+                actions.setSubmitting(false);
               }}
             >
               {(props) => (
@@ -108,14 +156,20 @@ const BuyAirtime: React.FC = () => {
                           {" "}
                           Network{" "}
                         </FormLabel>
-                        <Input
-                          bg="#D5D5D5"
-                          _placeholder={{ color: "#2D5363" }}
+
+                        <Select
+                          // variant="filled"
                           {...field}
+                          bg="#D5D5D5"
                           id="network"
                           placeholder="Select Network"
-                          type="text"
-                        />
+                          _placeholder={{ color: "#2D5363" }}
+                          color="#2D5363"
+                        >
+                          {airtimeList.map((item: any) => (
+                            <option value={item.name}>{item.name}</option>
+                          ))}
+                        </Select>
                         <FormErrorMessage>
                           {form.errors.network}
                         </FormErrorMessage>
@@ -140,7 +194,8 @@ const BuyAirtime: React.FC = () => {
                             {...field}
                             id="phone"
                             pr="4.5rem"
-                            type={"number"}
+                            type={"tel"}
+                            _placeholder={{ color: "#2D5363" }}
                             placeholder="Enter phone number"
                           />
                         </InputGroup>
@@ -166,6 +221,7 @@ const BuyAirtime: React.FC = () => {
                             id="amount"
                             pr="4.5rem"
                             type={"number"}
+                            _placeholder={{ color: "#2D5363" }}
                             placeholder="Enter amount"
                           />
                         </InputGroup>
@@ -197,6 +253,11 @@ const BuyAirtime: React.FC = () => {
                 </Form>
               )}
             </Formik>
+            <PinModal
+              isOpen={isOpen}
+              onClose={onClose}
+              values={transactionValues}
+            />
           </Box>
         </Box>
       </IonContent>
@@ -205,3 +266,108 @@ const BuyAirtime: React.FC = () => {
 };
 
 export default BuyAirtime;
+
+// confirmation modal pin
+
+function PinModal({ isOpen, onOpen, onClose, values }: any) {
+  // console.log(values);
+  // const [transactValues, settransactValues] = useState<any>({ ...values });
+  let transactValues = { ...values };
+  const [isBuying, setisBuying] = useState(false);
+  const [value, setValue] = useState("");
+  return (
+    <>
+      <Modal onClose={onClose} size={"full"} isOpen={isOpen}>
+        <ModalOverlay />
+        <ModalContent bg="white">
+          <ModalHeader color="#046494" m="30px" py="10px" px="0">
+            Confirm Airtime
+          </ModalHeader>
+          <ModalCloseButton color="#046494" fontSize="20px" p="10px" m="30px" />
+          <ModalBody>
+            <Flex
+              direction="column"
+              justify="center"
+              mt="50%"
+              transform="translateY(-50%)"
+              mx="auto"
+            >
+              {" "}
+              <Text color="grey" fontSize="16px">
+                You are about to purchase an airtime of{" "}
+                <Text
+                  as="span"
+                  fontSize="xl"
+                  fontWeight="medium"
+                  color="#046494"
+                >
+                  N{values.amount}
+                </Text>{" "}
+                for the phone number{" "}
+                <Text
+                  as="span"
+                  fontSize="xl"
+                  fontWeight="medium"
+                  color="#046494"
+                >
+                  {values.phone}
+                </Text>
+              </Text>
+              <HStack justify="center" mt="20px">
+                {" "}
+                <PinInput
+                  mask
+                  colorScheme="white"
+                  onChange={(e: any) => {
+                    setValue(e);
+                  }}
+                  onComplete={(e: any) => {
+                    setValue(e);
+                  }}
+                >
+                  <PinInputField bg="grey" />
+                  <PinInputField bg="grey" />
+                  <PinInputField bg="grey" />
+                  <PinInputField bg="grey" />
+                </PinInput>
+              </HStack>
+              <Box textAlign="center" w="full">
+                <Button
+                  isLoading={false}
+                  mt={6}
+                  colorScheme="blue"
+                  bg="#046494"
+                  size="md"
+                  color="white"
+                  fontWeight="medium"
+                  rounded="sm"
+                  justify="center"
+                  align="center"
+                  py="0px"
+                  px="30px"
+                  onClick={async () => {
+                    setisBuying(true);
+                    transactValues = { ...transactValues, pin: value };
+                    const headers: any = {
+                      Accept: "application/json",
+                      "Content-Type": "application/json;charset=UTF-8",
+                      authorization: window.localStorage.getItem("accessToken"),
+                    };
+                    const response = await axios.get(
+                      "https://paygo.gitit-tech.com/bills/",
+                      {
+                        headers: headers,
+                      }
+                    );
+                  }}
+                >
+                  Next
+                </Button>
+              </Box>
+            </Flex>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
+    </>
+  );
+}

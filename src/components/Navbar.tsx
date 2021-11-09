@@ -5,8 +5,7 @@ import { useSelector } from "react-redux";
 import paygo from "../images/whitepaygo.png";
 function Navbar() {
   const state = useSelector((state: any) => state);
-  console.log(state);
-  
+
   return (
     <Flex
       justifyContent="space-between"

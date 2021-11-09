@@ -60,7 +60,6 @@ export const fetchUser = () => {
 };
 
 //fetch airtime
-
 export const fetchBills = () => {
   return async (dispatch, getState) => {
     const options = {
@@ -77,7 +76,7 @@ export const fetchBills = () => {
       .then((response) => {
         dispatch({
           type: "BILLS",
-          payload: response.data,
+          payload: response.data.data,
         });
         // toast.success("Bills fetched successfully");
       })
