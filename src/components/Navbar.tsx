@@ -13,7 +13,7 @@ function Navbar() {
       align="center"
       p="30px"
       bg="white"
-      mb="30px"
+      mb="0px"
     >
       <Box width="50%">
         <Text color="#046494">
