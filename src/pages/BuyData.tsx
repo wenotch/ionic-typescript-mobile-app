@@ -1,5 +1,5 @@
 import Icon from "@chakra-ui/icon";
-import { IonContent, IonPage } from "@ionic/react";
+import { IonContent, IonPage, IonRouterLink } from "@ionic/react";
 import React from "react";
 import { useEffect, useState } from "react";
 import { Box, Text, HStack, Flex } from "@chakra-ui/react";
@@ -45,19 +45,38 @@ const BuyData: React.FC = () => {
       dataBundleList = [];
       bills.map((item: any) => {
         if (item.biller_code === "BIL108") {
-          //   setdataBundleList([...dataBundleList, item]);
+          dataBundleList.push(item);
+        }
+      });
+    } else if (value === "BIL109" && state.bills.length !== 0) {
+      dataBundleList = [];
+      bills.map((item: any) => {
+        if (item.biller_code === "BIL109") {
+          dataBundleList.push(item);
+        }
+      });
+    } else if (value === "BIL110" && state.bills.length !== 0) {
+      dataBundleList = [];
+      bills.map((item: any) => {
+        if (item.biller_code === "BIL110") {
+          dataBundleList.push(item);
+        }
+      });
+    } else if (value === "BIL111" && state.bills.length !== 0) {
+      dataBundleList = [];
+      bills.map((item: any) => {
+        if (item.biller_code === "BIL111") {
           dataBundleList.push(item);
         }
       });
     }
 
-    console.log(dataBundleList);
     return error;
   }
   function validateBundle(value: any) {
     let error;
     if (!value) {
-      error = "Bunder is required";
+      error = "Bundle is required";
     }
     return error;
   }
@@ -99,10 +118,17 @@ const BuyData: React.FC = () => {
       <IonContent fullscreen>
         <Box width="100%" h="100vh" bg="white">
           <Navbar />
-
+          <Box px="30px" pb="5px" display="inline-block">
+            <IonRouterLink routerDirection="back" routerLink="/dashboard">
+              <Box p="5px" fontSize="lg">
+                {" "}
+                Back
+              </Box>
+            </IonRouterLink>
+          </Box>
           <Box bg="#046494" mx="30px" px="50px" py="30px" rounded="lg">
             <Icon as={GiWallet} w={8} h={8} color="#fff" mb="2px" />
-            <Text cfontWeight="normal" color="white" fontSize="14px">
+            <Text fontWeight="normal" color="white" fontSize="14px">
               Wallet Balance
             </Text>
             <Text color="#E7BF00" fontWeight="semibold" fontSize="2xl">
@@ -128,7 +154,7 @@ const BuyData: React.FC = () => {
                   return item.name === values.bundle;
                 });
                 settransactionValues({ ...data[0], ...values });
-                console.log(transactionValues);
+
                 const headers: any = {
                   Accept: "application/json",
                   "Content-Type": "application/json;charset=UTF-8",
@@ -284,8 +310,6 @@ export default BuyData;
 // confirmation modal pin
 
 function PinModal({ isOpen, onOpen, onClose, values }: any) {
-  // console.log(values);
-  // const [transactValues, settransactValues] = useState<any>({ ...values });
   let transactValues = { ...values };
   const [isBuying, setisBuying] = useState(false);
   const [value, setValue] = useState("");

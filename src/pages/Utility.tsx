@@ -1,5 +1,5 @@
 import Icon from "@chakra-ui/icon";
-import { IonContent, IonPage, IonRouterLink } from "@ionic/react";
+import { IonContent, IonItem, IonPage, IonRouterLink } from "@ionic/react";
 import React from "react";
 import { useEffect, useState } from "react";
 import { Box, Text, HStack, Flex } from "@chakra-ui/react";
@@ -28,50 +28,73 @@ import {
 } from "@chakra-ui/modal";
 import { useDisclosure } from "@chakra-ui/hooks";
 import { PinInput, PinInputField } from "@chakra-ui/pin-input";
-import { dispatch } from "react-hot-toast/dist/core/store";
 
-const BuyAirtime: React.FC = () => {
+const Utility: React.FC = () => {
   // all my states
   const state = useSelector((state: any) => state);
-  //filters all possible by aitime providers from bills list in the redux store
   const bills = state.bills;
-  var airtimeList: any = [];
-  if (state.bills.length !== 0) {
-    bills.map((item: any) => {
-      if (item.item_code === "AT099" && item.country === "NG") {
-        airtimeList.push(item);
-      }
-    });
-  }
+  var cableList: any = [];
 
   // my form validations
-  function validateNetwork(value: any) {
+  function validateProvider(value: any) {
     let error;
     if (!value) {
       error = "Network is required";
+    } else if (value === "BIL122" && state.bills.length !== 0) {
+      cableList = [];
+      bills.map((item: any) => {
+        if (
+          (item.biller_code === "BIL122" && item.country === "NG") ||
+          (item.biller_code === "BIL192" && item.country === "NG") ||
+          (item.biller_code === "BIL201" && item.country === "NG") ||
+          (item.biller_code === "BIL157" && item.country === "NG")
+        ) {
+          cableList.push(item);
+        }
+      });
+    } else if (value === "BIL121" && state.bills.length !== 0) {
+      cableList = [];
+      bills.map((item: any) => {
+        if (
+          (item.biller_code === "BIL121" && item.country === "NG") ||
+          (item.biller_code === "BIL200" && item.country === "NG") ||
+          (item.biller_code === "BIL137" && item.country === "NG") ||
+          (item.biller_code === "BIL156" && item.country === "NG")
+        ) {
+          cableList.push(item);
+        }
+      });
+    } else if (value === "BIL123" && state.bills.length !== 0) {
+      cableList = [];
+      bills.map((item: any) => {
+        if (
+          (item.biller_code === "BIL123" && item.country === "NG") ||
+          (item.biller_code === "BIL193" && item.country === "NG") ||
+          (item.biller_code === "BIL160" && item.country === "NG") ||
+          (item.biller_code === "BIL129" && item.country === "NG")
+        ) {
+          cableList.push(item);
+        }
+      });
+    }
+
+    console.log(cableList);
+    return error;
+  }
+  function validateBundle(value: any) {
+    let error;
+    if (!value) {
+      error = "Bundle is required";
     }
     return error;
   }
-
-  function validatePhone(value: any) {
+  function validateCardNumber(value: any) {
     let error;
     if (!value) {
-      error = "Phone Number is required";
+      error = "Card Number is required";
     } else if (value < 0) {
       error = "Not a valid phone number";
     }
-    return error;
-  }
-  function validateAmount(value: any) {
-    let error;
-    if (!value) {
-      error = "Amount is required";
-    } else if (value < 100) {
-      error = "Min amount is N100";
-    }
-    // else if (state.user.length !== 0 && value > state.user[0].balance) {
-    //   error = "You do not have that amount in your wallet";
-    // }
     return error;
   }
 
@@ -109,6 +132,7 @@ const BuyAirtime: React.FC = () => {
               N{state.user.length === 0 ? "loading" : state.user[0].balance}
             </Text>
           </Box>
+
           <Box w={{ base: "100%", md: "468px" }} bg="white" mt="50px" px="30px">
             <Text
               textAlign="center"
@@ -117,16 +141,18 @@ const BuyAirtime: React.FC = () => {
               mb="10px"
               fontSize="xl"
             >
-              Buy Airtime
+              Cable Tv Subscription
             </Text>
             <Formik
               initialValues={{}}
               onSubmit={async (values: any, actions) => {
                 settransactionValues({});
-                const data = airtimeList.filter((item: any) => {
-                  return item.name === values.network;
+                const data = cableList.filter((item: any) => {
+                  return item.name === values.bundle;
                 });
+
                 settransactionValues({ ...data[0], ...values });
+                console.log(transactionValues);
                 const headers: any = {
                   Accept: "application/json",
                   "Content-Type": "application/json;charset=UTF-8",
@@ -138,7 +164,7 @@ const BuyAirtime: React.FC = () => {
                     "/" +
                     data[0].biller_code +
                     "/" +
-                    values.phone,
+                    values.cardNumber,
                   {
                     headers: headers,
                   }
@@ -153,7 +179,7 @@ const BuyAirtime: React.FC = () => {
             >
               {(props) => (
                 <Form>
-                  <Field name="network" validate={validateNetwork}>
+                  <Field name="network" validate={validateProvider}>
                     {({ field, form }: any) => (
                       <FormControl
                         mt="20px"
@@ -161,21 +187,25 @@ const BuyAirtime: React.FC = () => {
                       >
                         <FormLabel htmlFor="network" color="#2D5363">
                           {" "}
-                          Network{" "}
+                          Select Provider{" "}
                         </FormLabel>
 
                         <Select
-                          // variant="filled"
+                          disabled={state.bills.length === 0 ? true : false}
                           {...field}
                           bg="#D5D5D5"
                           id="network"
-                          placeholder="Select Network"
+                          placeholder="Select Provider"
                           _placeholder={{ color: "#2D5363" }}
                           color="#2D5363"
                         >
-                          {airtimeList.map((item: any) => (
-                            <option value={item.name}>{item.name}</option>
-                          ))}
+                          {/* gotv 122,192,201 and 157
+                            dstv 121,200,137 and 156 
+                            
+                            startime 160, 123 , 129, 193*/}
+                          <option value="BIL122">GOTV</option>
+                          <option value="BIL121">DSTV </option>
+                          <option value="BIL123">STARTIMES</option>
                         </Select>
                         <FormErrorMessage>
                           {form.errors.network}
@@ -184,57 +214,62 @@ const BuyAirtime: React.FC = () => {
                     )}
                   </Field>
 
-                  <Field name="phone" validate={validatePhone}>
+                  <Field name="bundle" validate={validateBundle}>
                     {({ field, form }: any) => (
                       <FormControl
                         mt="20px"
-                        isInvalid={form.errors.phone && form.touched.phone}
+                        isInvalid={form.errors.bundle && form.touched.bundle}
                       >
-                        <FormLabel htmlFor="phone" color="#2D5363">
+                        <FormLabel htmlFor="bundle" color="#2D5363">
                           {" "}
-                          Phone Number{" "}
+                          Plan{" "}
                         </FormLabel>
 
-                        <InputGroup size="md">
-                          <Input
-                            bg="#D5D5D5"
-                            {...field}
-                            id="phone"
-                            pr="4.5rem"
-                            type={"tel"}
-                            _placeholder={{ color: "#2D5363" }}
-                            placeholder="Enter phone number"
-                          />
-                        </InputGroup>
-                        <FormErrorMessage>{form.errors.phone}</FormErrorMessage>
+                        <Select
+                          {...field}
+                          bg="#D5D5D5"
+                          id="bundle"
+                          placeholder="Select Bundle"
+                          _placeholder={{ color: "#2D5363" }}
+                          color="#2D5363"
+                        >
+                          {cableList.map((item: any) => (
+                            <option key={item.id} value={item.name}>
+                              {"(N" + item.amount + ") " + item.name}
+                            </option>
+                          ))}
+                        </Select>
+                        <FormErrorMessage>
+                          {form.errors.network}
+                        </FormErrorMessage>
                       </FormControl>
                     )}
                   </Field>
-                  <Field name="amount" validate={validateAmount}>
+                  <Field name="cardNumber" validate={validateCardNumber}>
                     {({ field, form }: any) => (
                       <FormControl
                         mt="20px"
-                        isInvalid={form.errors.amount && form.touched.amount}
+                        isInvalid={
+                          form.errors.cardNumber && form.touched.cardNumber
+                        }
                       >
-                        <FormLabel htmlFor="amount" color="#2D5363">
+                        <FormLabel htmlFor="phone" color="#2D5363">
                           {" "}
-                          Amount{" "}
+                          Card Number{" "}
                         </FormLabel>
 
                         <InputGroup size="md">
                           <Input
                             bg="#D5D5D5"
                             {...field}
-                            id="amount"
+                            id="cardNumber"
                             pr="4.5rem"
-                            type={"number"}
+                            type={"tel"}
                             _placeholder={{ color: "#2D5363" }}
-                            placeholder="Enter amount"
+                            placeholder="Enter Card number"
                           />
                         </InputGroup>
-                        <FormErrorMessage>
-                          {form.errors.amount}
-                        </FormErrorMessage>
+                        <FormErrorMessage>{form.errors.phone}</FormErrorMessage>
                       </FormControl>
                     )}
                   </Field>
@@ -272,11 +307,13 @@ const BuyAirtime: React.FC = () => {
   );
 };
 
-export default BuyAirtime;
+export default Utility;
 
 // confirmation modal pin
 
 function PinModal({ isOpen, onOpen, onClose, values }: any) {
+  // console.log(values);
+  // const [transactValues, settransactValues] = useState<any>({ ...values });
   let transactValues = { ...values };
   const [isBuying, setisBuying] = useState(false);
   const [value, setValue] = useState("");
@@ -286,7 +323,7 @@ function PinModal({ isOpen, onOpen, onClose, values }: any) {
         <ModalOverlay />
         <ModalContent bg="white">
           <ModalHeader color="#046494" m="30px" py="10px" px="0">
-            Confirm Airtime
+            Confirm Data Subscription
           </ModalHeader>
           <ModalCloseButton color="#046494" fontSize="20px" p="10px" m="30px" />
           <ModalBody>
@@ -299,7 +336,16 @@ function PinModal({ isOpen, onOpen, onClose, values }: any) {
             >
               {" "}
               <Text color="grey" fontSize="16px">
-                You are about to purchase an airtime of{" "}
+                You are about to purchase an{" "}
+                <Text
+                  as="span"
+                  fontSize="xl"
+                  fontWeight="medium"
+                  color="#046494"
+                >
+                  {values.biller_name}
+                </Text>{" "}
+                worth{" "}
                 <Text
                   as="span"
                   fontSize="xl"
@@ -308,15 +354,15 @@ function PinModal({ isOpen, onOpen, onClose, values }: any) {
                 >
                   N{values.amount}
                 </Text>{" "}
-                for the phone number{" "}
+                for the card number{" "}
                 <Text
                   as="span"
                   fontSize="xl"
                   fontWeight="medium"
                   color="#046494"
                 >
-                  {values.phone}.
-                </Text>
+                  {values.cardNumber}.
+                </Text>{" "}
                 Enter your Pin to confirm transaction
               </Text>
               <HStack justify="center" mt="20px">

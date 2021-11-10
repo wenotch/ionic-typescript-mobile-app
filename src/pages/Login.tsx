@@ -30,7 +30,6 @@ const Login: React.FC = () => {
   //getting complete state from redux
   const state = useSelector((state: any) => state);
   const isLoading = state.isLoading;
-  console.log(isLoading);
 
   //init useDispatch
   const dispatch = useDispatch();
@@ -72,8 +71,6 @@ const Login: React.FC = () => {
       dispatch(login(userData));
     }
   };
-
-
 
   return (
     <IonPage>

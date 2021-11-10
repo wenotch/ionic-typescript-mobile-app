@@ -31,6 +31,7 @@ import ProtectedRoute from "./components/ProtectedComponent";
 import BottomNav from "./components/BottomNav";
 import BuyAirtime from "./pages/BuyAirtime";
 import BuyData from "./pages/BuyData";
+import CableTv from "./pages/CableTv";
 const App: React.FC = () => {
   return (
     <IonApp>
@@ -52,6 +53,13 @@ const App: React.FC = () => {
 
             <Route path="/buy-data" exact={true}>
               <BuyData />
+            </Route>
+
+            <Route path="/buy-cable" exact={true}>
+              <CableTv />
+            </Route>
+            <Route path="/utility" exact={true}>
+              <CableTv />
             </Route>
             <Route path="/forgot" exact={true}>
               <ForgotPassword />

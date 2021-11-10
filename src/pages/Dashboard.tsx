@@ -16,7 +16,6 @@ import Transactions from "../components/Transactions";
 import BottomNav from "../components/BottomNav";
 const Dashboard: React.FC = () => {
   const state = useSelector((state: any) => state);
-  console.log(state.user.balance);
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -38,7 +37,7 @@ const Dashboard: React.FC = () => {
           </Text>
           <Box bg="#046494" mx="30px" px="50px" py="30px" rounded="lg">
             <Icon as={GiWallet} w={8} h={8} color="#fff" mb="2px" />
-            <Text cfontWeight="normal" color="white" fontSize="14px">
+            <Text fontWeight="normal" color="white" fontSize="14px">
               Wallet Balance
             </Text>
             <Text color="#E7BF00" fontWeight="semibold" fontSize="2xl">
