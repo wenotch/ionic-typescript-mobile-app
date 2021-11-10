@@ -141,7 +141,7 @@ const Utility: React.FC = () => {
               mb="10px"
               fontSize="xl"
             >
-              Cable Tv Subscription
+              Utility Bills
             </Text>
             <Formik
               initialValues={{}}
