@@ -30,29 +30,37 @@ import { useDisclosure } from "@chakra-ui/hooks";
 import { PinInput, PinInputField } from "@chakra-ui/pin-input";
 import { dispatch } from "react-hot-toast/dist/core/store";
 
-const BuyAirtime: React.FC = () => {
+const BuyData: React.FC = () => {
   // all my states
   const state = useSelector((state: any) => state);
-  //filters all possible by aitime providers from bills list in the redux store
   const bills = state.bills;
-  var airtimeList: any = [];
-  if (state.bills.length !== 0) {
-    bills.map((item: any) => {
-      if (item.item_code === "AT099" && item.country === "NG") {
-        airtimeList.push(item);
-      }
-    });
-  }
+  var dataBundleList: any = [];
 
   // my form validations
   function validateNetwork(value: any) {
     let error;
     if (!value) {
       error = "Network is required";
+    } else if (value === "BIL108" && state.bills.length !== 0) {
+      dataBundleList = [];
+      bills.map((item: any) => {
+        if (item.biller_code === "BIL108") {
+          //   setdataBundleList([...dataBundleList, item]);
+          dataBundleList.push(item);
+        }
+      });
+    }
+
+    console.log(dataBundleList);
+    return error;
+  }
+  function validateBundle(value: any) {
+    let error;
+    if (!value) {
+      error = "Bunder is required";
     }
     return error;
   }
-
   function validatePhone(value: any) {
     let error;
     if (!value) {
@@ -110,16 +118,17 @@ const BuyAirtime: React.FC = () => {
               mb="10px"
               fontSize="xl"
             >
-              Buy Airtime
+              Buy Data
             </Text>
             <Formik
               initialValues={{}}
               onSubmit={async (values: any, actions) => {
                 settransactionValues({});
-                const data = airtimeList.filter((item: any) => {
-                  return item.name === values.network;
+                const data = dataBundleList.filter((item: any) => {
+                  return item.name === values.bundle;
                 });
                 settransactionValues({ ...data[0], ...values });
+                console.log(transactionValues);
                 const headers: any = {
                   Accept: "application/json",
                   "Content-Type": "application/json;charset=UTF-8",
@@ -154,11 +163,12 @@ const BuyAirtime: React.FC = () => {
                       >
                         <FormLabel htmlFor="network" color="#2D5363">
                           {" "}
-                          Network{" "}
+                          Select Network{" "}
                         </FormLabel>
 
                         <Select
                           // variant="filled"
+                          disabled={state.bills.length === 0 ? true : false}
                           {...field}
                           bg="#D5D5D5"
                           id="network"
@@ -166,9 +176,10 @@ const BuyAirtime: React.FC = () => {
                           _placeholder={{ color: "#2D5363" }}
                           color="#2D5363"
                         >
-                          {airtimeList.map((item: any) => (
-                            <option value={item.name}>{item.name}</option>
-                          ))}
+                          <option value="BIL108">MTN Nigeria</option>
+                          <option value="BIL109">GLO </option>
+                          <option value="BIL110">AIRTEL</option>
+                          <option value="BIL111">9MOBILE</option>
                         </Select>
                         <FormErrorMessage>
                           {form.errors.network}
@@ -177,6 +188,37 @@ const BuyAirtime: React.FC = () => {
                     )}
                   </Field>
 
+                  <Field name="bundle" validate={validateBundle}>
+                    {({ field, form }: any) => (
+                      <FormControl
+                        mt="20px"
+                        isInvalid={form.errors.bundle && form.touched.bundle}
+                      >
+                        <FormLabel htmlFor="bundle" color="#2D5363">
+                          {" "}
+                          Bundle{" "}
+                        </FormLabel>
+
+                        <Select
+                          {...field}
+                          bg="#D5D5D5"
+                          id="bundle"
+                          placeholder="Select Bundle"
+                          _placeholder={{ color: "#2D5363" }}
+                          color="#2D5363"
+                        >
+                          {dataBundleList.map((item: any) => (
+                            <option value={item.name}>
+                              {"(N" + item.amount + ") " + item.name}
+                            </option>
+                          ))}
+                        </Select>
+                        <FormErrorMessage>
+                          {form.errors.network}
+                        </FormErrorMessage>
+                      </FormControl>
+                    )}
+                  </Field>
                   <Field name="phone" validate={validatePhone}>
                     {({ field, form }: any) => (
                       <FormControl
@@ -200,34 +242,6 @@ const BuyAirtime: React.FC = () => {
                           />
                         </InputGroup>
                         <FormErrorMessage>{form.errors.phone}</FormErrorMessage>
-                      </FormControl>
-                    )}
-                  </Field>
-                  <Field name="amount" validate={validateAmount}>
-                    {({ field, form }: any) => (
-                      <FormControl
-                        mt="20px"
-                        isInvalid={form.errors.amount && form.touched.amount}
-                      >
-                        <FormLabel htmlFor="amount" color="#2D5363">
-                          {" "}
-                          Amount{" "}
-                        </FormLabel>
-
-                        <InputGroup size="md">
-                          <Input
-                            bg="#D5D5D5"
-                            {...field}
-                            id="amount"
-                            pr="4.5rem"
-                            type={"number"}
-                            _placeholder={{ color: "#2D5363" }}
-                            placeholder="Enter amount"
-                          />
-                        </InputGroup>
-                        <FormErrorMessage>
-                          {form.errors.amount}
-                        </FormErrorMessage>
                       </FormControl>
                     )}
                   </Field>
@@ -265,7 +279,7 @@ const BuyAirtime: React.FC = () => {
   );
 };
 
-export default BuyAirtime;
+export default BuyData;
 
 // confirmation modal pin
 
@@ -281,7 +295,7 @@ function PinModal({ isOpen, onOpen, onClose, values }: any) {
         <ModalOverlay />
         <ModalContent bg="white">
           <ModalHeader color="#046494" m="30px" py="10px" px="0">
-            Confirm Airtime
+            Confirm Data Subscription
           </ModalHeader>
           <ModalCloseButton color="#046494" fontSize="20px" p="10px" m="30px" />
           <ModalBody>
@@ -294,7 +308,16 @@ function PinModal({ isOpen, onOpen, onClose, values }: any) {
             >
               {" "}
               <Text color="grey" fontSize="16px">
-                You are about to purchase an airtime of{" "}
+                You are about to purchase an{" "}
+                <Text
+                  as="span"
+                  fontSize="xl"
+                  fontWeight="medium"
+                  color="#046494"
+                >
+                  {values.biller_name}
+                </Text>{" "}
+                worth{" "}
                 <Text
                   as="span"
                   fontSize="xl"
@@ -311,7 +334,7 @@ function PinModal({ isOpen, onOpen, onClose, values }: any) {
                   color="#046494"
                 >
                   {values.phone}.
-                </Text>
+                </Text>{" "}
                 Enter your Pin to confirm transaction
               </Text>
               <HStack justify="center" mt="20px">
