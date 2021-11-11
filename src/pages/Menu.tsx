@@ -101,7 +101,7 @@ const Menu: React.FC = () => {
           </Flex>{" "}
           <Flex
             mt="3px"
-            onClick={() =>history.push("/buy-cable")}
+            onClick={() => history.push("/buy-cable")}
             px="30px"
             py="15px"
             rounded="sm"
@@ -161,6 +161,7 @@ const Menu: React.FC = () => {
             alignItems="center"
             align="center"
             bg="#046494"
+            mb="11vh"
           >
             <Icon as={FaHistory} w={5} h={5} mr="10px" />
             <Text fontSize="xl" color="white">

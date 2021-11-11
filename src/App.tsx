@@ -34,6 +34,9 @@ import BuyData from "./pages/BuyData";
 import CableTv from "./pages/CableTv";
 import Utility from "./pages/Utility";
 import Menu from "./pages/Menu";
+import TransactionPage from "./pages/Transactions";
+import AddMoney from "./pages/AddMoney";
+import Profile from "./pages/Profile";
 const App: React.FC = () => {
   return (
     <IonApp>
@@ -71,6 +74,18 @@ const App: React.FC = () => {
 
             <Route path="/signup" exact={true}>
               <Register />
+            </Route>
+
+            <Route path="/transactions" exact={true}>
+              <TransactionPage />
+            </Route>
+
+            <Route path="/profile" exact={true}>
+              <Profile />
+            </Route>
+
+            <Route path="/add-money" exact={true}>
+              <AddMoney />
             </Route>
 
             <Route path="/bvn-verification" exact={true}>

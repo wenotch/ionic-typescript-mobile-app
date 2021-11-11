@@ -44,7 +44,7 @@ const BottomNav: React.FC = () => {
           <Text>Menu</Text>
         </Box>
       </NavLink>
-      <NavLink to="/payments" activeClassName="active">
+      <NavLink to="/transactions" activeClassName="active">
         <Box
           justify="center"
           textAlign="center" //   color="#046494"
@@ -52,7 +52,7 @@ const BottomNav: React.FC = () => {
           p="5px"
         >
           <Icon as={FaRegMoneyBillAlt} h={5} w={5} />
-          <Text>Recents</Text>
+          <Text>History</Text>
         </Box>{" "}
       </NavLink>
       <NavLink to="/profile" activeClassName="active">
