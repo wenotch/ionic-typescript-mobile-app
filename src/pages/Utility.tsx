@@ -33,52 +33,47 @@ const Utility: React.FC = () => {
   // all my states
   const state = useSelector((state: any) => state);
   const bills = state.bills;
-  var cableList: any = [];
+  var utilityList: any = [];
+
+  if (bills.length > 0) {
+    utilityList = bills.filter(
+      (bill: any) =>
+        bill.country === "NG" &&
+        bill.is_airtime === false &&
+        bill.biller_code !== "BIL122" &&
+        bill.biller_code !== "BIL109" &&
+        bill.biller_code !== "BIL192" &&
+        bill.biller_code !== "BIL201" &&
+        bill.biller_code !== "BIL121" &&
+        bill.biller_code !== "BIL123" &&
+        bill.biller_code !== "BIL108" &&
+        bill.biller_code !== "BIL110" &&
+        bill.biller_code !== "BIL124" &&
+        bill.biller_code !== "BIL111" &&
+        bill.biller_code !== "BIL129" &&
+        bill.biller_code !== "BIL126" &&
+        bill.biller_code !== "BIL125"
+    );
+  }
 
   // my form validations
   function validateProvider(value: any) {
     let error;
     if (!value) {
-      error = "Network is required";
-    } else if (value === "BIL122" && state.bills.length !== 0) {
-      cableList = [];
-      bills.map((item: any) => {
-        if (
-          (item.biller_code === "BIL122" && item.country === "NG") ||
-          (item.biller_code === "BIL192" && item.country === "NG") ||
-          (item.biller_code === "BIL201" && item.country === "NG") ||
-          (item.biller_code === "BIL157" && item.country === "NG")
-        ) {
-          cableList.push(item);
-        }
-      });
-    } else if (value === "BIL121" && state.bills.length !== 0) {
-      cableList = [];
-      bills.map((item: any) => {
-        if (
-          (item.biller_code === "BIL121" && item.country === "NG") ||
-          (item.biller_code === "BIL200" && item.country === "NG") ||
-          (item.biller_code === "BIL137" && item.country === "NG") ||
-          (item.biller_code === "BIL156" && item.country === "NG")
-        ) {
-          cableList.push(item);
-        }
-      });
-    } else if (value === "BIL123" && state.bills.length !== 0) {
-      cableList = [];
-      bills.map((item: any) => {
-        if (
-          (item.biller_code === "BIL123" && item.country === "NG") ||
-          (item.biller_code === "BIL193" && item.country === "NG") ||
-          (item.biller_code === "BIL160" && item.country === "NG") ||
-          (item.biller_code === "BIL129" && item.country === "NG")
-        ) {
-          cableList.push(item);
-        }
-      });
+      error = "Bill type is required";
     }
-
-    console.log(cableList);
+    return error;
+  }
+  function validateAmount(value: any) {
+    let error;
+    if (!value) {
+      error = "Amount is required";
+    } else if (value < 100) {
+      error = "Min amount is N100";
+    }
+    // else if (state.user.length !== 0 && value > state.user[0].balance) {
+    //   error = "You do not have that amount in your wallet";
+    // }
     return error;
   }
   function validateBundle(value: any) {
@@ -147,8 +142,8 @@ const Utility: React.FC = () => {
               initialValues={{}}
               onSubmit={async (values: any, actions) => {
                 settransactionValues({});
-                const data = cableList.filter((item: any) => {
-                  return item.name === values.bundle;
+                const data = utilityList.filter((item: any) => {
+                  return item.name === values.network;
                 });
 
                 settransactionValues({ ...data[0], ...values });
@@ -187,7 +182,7 @@ const Utility: React.FC = () => {
                       >
                         <FormLabel htmlFor="network" color="#2D5363">
                           {" "}
-                          Select Provider{" "}
+                          Select Bill Type{" "}
                         </FormLabel>
 
                         <Select
@@ -195,47 +190,13 @@ const Utility: React.FC = () => {
                           {...field}
                           bg="#D5D5D5"
                           id="network"
-                          placeholder="Select Provider"
+                          placeholder="Select Bill Type"
                           _placeholder={{ color: "#2D5363" }}
                           color="#2D5363"
                         >
-                          {/* gotv 122,192,201 and 157
-                            dstv 121,200,137 and 156 
-                            
-                            startime 160, 123 , 129, 193*/}
-                          <option value="BIL122">GOTV</option>
-                          <option value="BIL121">DSTV </option>
-                          <option value="BIL123">STARTIMES</option>
-                        </Select>
-                        <FormErrorMessage>
-                          {form.errors.network}
-                        </FormErrorMessage>
-                      </FormControl>
-                    )}
-                  </Field>
-
-                  <Field name="bundle" validate={validateBundle}>
-                    {({ field, form }: any) => (
-                      <FormControl
-                        mt="20px"
-                        isInvalid={form.errors.bundle && form.touched.bundle}
-                      >
-                        <FormLabel htmlFor="bundle" color="#2D5363">
-                          {" "}
-                          Plan{" "}
-                        </FormLabel>
-
-                        <Select
-                          {...field}
-                          bg="#D5D5D5"
-                          id="bundle"
-                          placeholder="Select Bundle"
-                          _placeholder={{ color: "#2D5363" }}
-                          color="#2D5363"
-                        >
-                          {cableList.map((item: any) => (
+                          {utilityList.map((item: any) => (
                             <option key={item.id} value={item.name}>
-                              {"(N" + item.amount + ") " + item.name}
+                              {item.name}
                             </option>
                           ))}
                         </Select>
@@ -245,6 +206,36 @@ const Utility: React.FC = () => {
                       </FormControl>
                     )}
                   </Field>
+
+                  <Field name="amount" validate={validateAmount}>
+                    {({ field, form }: any) => (
+                      <FormControl
+                        mt="20px"
+                        isInvalid={form.errors.amount && form.touched.amount}
+                      >
+                        <FormLabel htmlFor="amount" color="#2D5363">
+                          {" "}
+                          Amount{" "}
+                        </FormLabel>
+
+                        <InputGroup size="md">
+                          <Input
+                            bg="#D5D5D5"
+                            {...field}
+                            id="amount"
+                            pr="4.5rem"
+                            type={"number"}
+                            _placeholder={{ color: "#2D5363" }}
+                            placeholder="Enter amount"
+                          />
+                        </InputGroup>
+                        <FormErrorMessage>
+                          {form.errors.amount}
+                        </FormErrorMessage>
+                      </FormControl>
+                    )}
+                  </Field>
+
                   <Field name="cardNumber" validate={validateCardNumber}>
                     {({ field, form }: any) => (
                       <FormControl

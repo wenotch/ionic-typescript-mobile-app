@@ -32,25 +32,22 @@ import BottomNav from "./components/BottomNav";
 import BuyAirtime from "./pages/BuyAirtime";
 import BuyData from "./pages/BuyData";
 import CableTv from "./pages/CableTv";
+import Utility from "./pages/Utility";
 const App: React.FC = () => {
   return (
     <IonApp>
       <IonReactRouter history={history}>
         <IonSplitPane contentId="main">
-          {/* <BottomNav /> */}
-
           <IonRouterOutlet id="main">
             <Route path="/" exact={true}>
               <Redirect to="/login" />
             </Route>
-
             <Route path="/login" exact={true}>
               <Login />
             </Route>
             <Route path="/buy-airtime" exact={true}>
               <BuyAirtime />
             </Route>
-
             <Route path="/buy-data" exact={true}>
               <BuyData />
             </Route>
@@ -59,7 +56,7 @@ const App: React.FC = () => {
               <CableTv />
             </Route>
             <Route path="/utility" exact={true}>
-              <CableTv />
+              <Utility />
             </Route>
             <Route path="/forgot" exact={true}>
               <ForgotPassword />

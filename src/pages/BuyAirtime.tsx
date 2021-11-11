@@ -174,7 +174,9 @@ const BuyAirtime: React.FC = () => {
                           color="#2D5363"
                         >
                           {airtimeList.map((item: any) => (
-                            <option value={item.name}>{item.name}</option>
+                            <option key={item.id} value={item.name}>
+                              {item.name}
+                            </option>
                           ))}
                         </Select>
                         <FormErrorMessage>

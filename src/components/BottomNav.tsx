@@ -23,8 +23,7 @@ const BottomNav: React.FC = () => {
       <NavLink to="/dashboard" activeClassName="active">
         <Box
           justify="center"
-          textAlign="center"
-          routerDirection="none"
+          textAlign="center" 
           //   color="#046494"
           color="grey"
           p="5px"

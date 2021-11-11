@@ -234,7 +234,7 @@ const BuyData: React.FC = () => {
                           color="#2D5363"
                         >
                           {dataBundleList.map((item: any) => (
-                            <option value={item.name}>
+                            <option value={item.name} key={item.id}>
                               {"(N" + item.amount + ") " + item.name}
                             </option>
                           ))}
