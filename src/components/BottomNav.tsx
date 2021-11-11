@@ -1,4 +1,5 @@
 import { Box, Flex, Link, Text } from "@chakra-ui/layout";
+import { useHistory } from "react-router-dom";
 import { Icon } from "@chakra-ui/react";
 import React from "react";
 import { FaHome, FaRegMoneyBillAlt } from "react-icons/fa";

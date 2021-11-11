@@ -1,5 +1,9 @@
 a.active {
-  color: "red !important";
-  background: #bee3f8;
+  color: "white !important";
+  background: #046494;
   border-radius: 5px;
+}
+
+a.active > div {
+  color: white;
 }
