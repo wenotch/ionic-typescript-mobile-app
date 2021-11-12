@@ -85,6 +85,7 @@ export const fetchBills = () => {
       });
   };
 };
+
 //paybills action
 export const payBills = ({ transactValues }) => {
   console.log(transactValues.biller_name);
@@ -122,6 +123,34 @@ export const payBills = ({ transactValues }) => {
         toast.error("Something went wrong, check your balance");
         history.push("/dashboard");
         dispatch({ type: "NOTLOADING" });
+      });
+  };
+};
+
+//updateUserProfile
+export const updateProfile = (values) => {
+  console.log(values);
+  const user = values;
+  return async (dispatch, getState) => {
+    const options = {
+      url: baseUrl + "/users",
+      method: "put",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json;charset=UTF-8",
+        authorization: window.localStorage.getItem("accessToken"),
+      },
+      data: user,
+    };
+
+    Axios(options)
+      .then(async (response) => {
+        await window.location.reload();
+        toast.success("Updated Profile");
+      })
+      .catch((error) => {
+        toast.error("Something went wrong");
+        history.push("/dashboard");
       });
   };
 };

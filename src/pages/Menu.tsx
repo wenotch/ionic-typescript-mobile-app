@@ -21,14 +21,6 @@ const Menu: React.FC = () => {
       <IonContent fullscreen>
         <Box width="100%" h="100vh" bg="white">
           <Navbar />
-          <Box px="30px" pb="5px" display="inline-block">
-            <IonRouterLink routerDirection="back" routerLink="/dashboard">
-              <Box p="5px" fontSize="lg">
-                {" "}
-                Back
-              </Box>
-            </IonRouterLink>
-          </Box>
           <Text textAlign="center" fontSize="xl" mb="20px">
             Menu
           </Text>

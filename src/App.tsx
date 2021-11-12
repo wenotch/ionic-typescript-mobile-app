@@ -37,7 +37,7 @@ import Menu from "./pages/Menu";
 import TransactionPage from "./pages/Transactions";
 import AddMoney from "./pages/AddMoney";
 import Profile from "./pages/Profile";
-import UpdateProfile from "./pages/UpdateProfile";
+import UpdateProfile from "./pages/UpdateProfile"; 
 const App: React.FC = () => {
   return (
     <IonApp>

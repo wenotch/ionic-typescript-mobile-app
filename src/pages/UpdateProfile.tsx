@@ -5,76 +5,46 @@ import { useEffect, useState } from "react";
 import { Box, Text, HStack, Flex } from "@chakra-ui/react";
 import Navbar from "../components/Navbar";
 import { useDispatch, useSelector } from "react-redux";
-import { GiWallet } from "react-icons/gi";
-import { fetchBills, fetchUser, payBills } from "../Redux/actions/action";
+import { fetchBills, fetchUser, updateProfile } from "../Redux/actions/action";
 import { Field, Form, Formik } from "formik";
 import {
   FormControl,
   FormLabel,
   FormErrorMessage,
 } from "@chakra-ui/form-control";
-import { Input, InputGroup, InputRightElement } from "@chakra-ui/input";
+import { Input, InputGroup } from "@chakra-ui/input";
 import { Button } from "@chakra-ui/button";
-import axios from "axios";
-import { Select } from "@chakra-ui/select";
-import toast from "react-hot-toast";
-import { useDisclosure } from "@chakra-ui/hooks";
+import { setupMaster } from "cluster";
 
 const UpdateProfile: React.FC = () => {
   // all my states
   const state = useSelector((state: any) => state);
-  //filters all possible by aitime providers from bills list in the redux store
-  const bills = state.bills;
-  var airtimeList: any = [];
-  if (state.bills.length !== 0) {
-    bills.map((item: any) => {
-      if (item.item_code === "AT099" && item.country === "NG") {
-        airtimeList.push(item);
-      }
-    });
-  }
 
   // my form validations
-  function validateNetwork(value: any) {
+  function validateFields(value: any) {
     let error;
     if (!value) {
-      error = "Network is required";
-    }
-    return error;
-  }
-
-  function validatePhone(value: any) {
-    let error;
-    if (!value) {
-      error = "Phone Number is required";
-    } else if (value < 0) {
-      error = "Not a valid phone number";
-    }
-    return error;
-  }
-  function validateAmount(value: any) {
-    let error;
-    if (!value) {
-      error = "Amount is required";
-    } else if (value < 100) {
-      error = "Min amount is N100";
-    } else if (state.user.length !== 0 && value > state.user[0].balance) {
-      error = "You do not have that amount in your wallet";
+      error = "This field is required";
     }
     return error;
   }
 
   const dispatch = useDispatch();
+  const [currentUser, setcurrentUser] = useState<any>("");
   useEffect(() => {
     dispatch(fetchBills());
     dispatch(fetchUser());
   }, []);
+  useEffect(() => {
+    if (state.user.length !== 0) {
+      //   setdisableed(false);
+      setcurrentUser(state.user[0].owner);
+    }
+  });
+  console.log(currentUser);
 
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  var [transactionValues, settransactionValues] = useState({});
-  const handleSizeClick = () => {
-    onOpen();
-  };
+  const [disableed, setdisableed] = useState(false);
+
   return (
     <IonPage>
       <IonContent fullscreen>
@@ -91,7 +61,7 @@ const UpdateProfile: React.FC = () => {
           <Box
             w={{ base: "100%", md: "468px" }}
             bg="white"
-            mt="50px"
+            mt="10px"
             px="30px"
             pb="11vh"
           >
@@ -102,151 +72,297 @@ const UpdateProfile: React.FC = () => {
               mb="10px"
               fontSize="xl"
             >
-              Buy Airtime
+              Update Profile
             </Text>
-            <Formik
-              initialValues={{}}
-              onSubmit={async (values: any, actions) => {
-                settransactionValues({});
-                const data = airtimeList.filter((item: any) => {
-                  return item.name === values.network;
-                });
-                settransactionValues({ ...data[0], ...values });
-                const headers: any = {
-                  Accept: "application/json",
-                  "Content-Type": "application/json;charset=UTF-8",
-                  authorization: window.localStorage.getItem("accessToken"),
-                };
-                const response = await axios.get(
-                  "https://paygo.gitit-tech.com/bills/" +
-                    data[0].item_code +
-                    "/" +
-                    data[0].biller_code +
-                    "/" +
-                    values.phone,
-                  {
-                    headers: headers,
-                  }
-                );
-                if (response.data.message === "Item validated successfully") {
-                  onOpen();
-                } else {
-                  toast.error("something went ");
-                }
-                actions.setSubmitting(false);
-              }}
-            >
-              {(props) => (
-                <Form>
-                  <Field name="network" validate={validateNetwork}>
-                    {({ field, form }: any) => (
-                      <FormControl
-                        mt="20px"
-                        isInvalid={form.errors.network && form.touched.network}
-                      >
-                        <FormLabel htmlFor="network" color="#2D5363">
-                          {" "}
-                          Network{" "}
-                        </FormLabel>
-
-                        <Select
-                          // variant="filled"
-                          {...field}
-                          bg="#D5D5D5"
-                          id="network"
-                          placeholder="Select Network"
-                          _placeholder={{ color: "#2D5363" }}
-                          color="#2D5363"
+            {currentUser.length === 0 ? (
+              "loading"
+            ) : (
+              <Formik
+                initialValues={{
+                  firstName: currentUser.firstName,
+                  lastName: currentUser.lastName,
+                  address: currentUser.address,
+                  city: currentUser.city,
+                  state: currentUser.state,
+                  nextOfKinName: currentUser.nextOfKinName,
+                  nextOfKinPhone: currentUser.nextOfKinPhone,
+                  nextOfKinAddress: currentUser.nextOfKinAddress,
+                }}
+                onSubmit={async (values: any, actions) => {
+                  await dispatch(updateProfile(values));
+                  actions.setSubmitting(false);
+                }}
+              >
+                {(props) => (
+                  <Form>
+                    <Field name="firstName" validate={validateFields}>
+                      {({ field, form }: any) => (
+                        <FormControl
+                          mt="20px"
+                          isInvalid={
+                            form.errors.firstName && form.touched.firstName
+                          }
                         >
-                          {airtimeList.map((item: any) => (
-                            <option key={item.id} value={item.name}>
-                              {item.name}
-                            </option>
-                          ))}
-                        </Select>
-                        <FormErrorMessage>
-                          {form.errors.network}
-                        </FormErrorMessage>
-                      </FormControl>
-                    )}
-                  </Field>
+                          <FormLabel htmlFor="firstName" color="#2D5363">
+                            {" "}
+                            First Name{" "}
+                          </FormLabel>
 
-                  <Field name="phone" validate={validatePhone}>
-                    {({ field, form }: any) => (
-                      <FormControl
-                        mt="20px"
-                        isInvalid={form.errors.phone && form.touched.phone}
+                          <InputGroup size="md">
+                            <Input
+                              isDisabled={disableed}
+                              bg="#D5D5D5"
+                              {...field}
+                              id="firstName"
+                              pr="4.5rem"
+                              _placeholder={{ color: "#2D5363" }}
+                              placeholder=" First Name"
+                            />
+                          </InputGroup>
+                          <FormErrorMessage>
+                            {form.errors.firstName}
+                          </FormErrorMessage>
+                        </FormControl>
+                      )}
+                    </Field>
+                    <Field name="lastName" validate={validateFields}>
+                      {({ field, form }: any) => (
+                        <FormControl
+                          mt="20px"
+                          isInvalid={
+                            form.errors.lastName && form.touched.lastName
+                          }
+                        >
+                          <FormLabel htmlFor="lastName" color="#2D5363">
+                            {" "}
+                            Last Name{" "}
+                          </FormLabel>
+
+                          <InputGroup size="md">
+                            <Input
+                              isDisabled={disableed}
+                              bg="#D5D5D5"
+                              {...field}
+                              id="lastName"
+                              pr="4.5rem"
+                              _placeholder={{ color: "#2D5363" }}
+                              placeholder="Last Name"
+                            />
+                          </InputGroup>
+                          <FormErrorMessage>
+                            {form.errors.lastName}
+                          </FormErrorMessage>
+                        </FormControl>
+                      )}
+                    </Field>
+
+                    <Field name="address" validate={validateFields}>
+                      {({ field, form }: any) => (
+                        <FormControl
+                          mt="20px"
+                          isInvalid={
+                            form.errors.address && form.touched.address
+                          }
+                        >
+                          <FormLabel htmlFor="address" color="#2D5363">
+                            {" "}
+                            Address{" "}
+                          </FormLabel>
+
+                          <InputGroup size="md">
+                            <Input
+                              bg="#D5D5D5"
+                              isDisabled={disableed}
+                              {...field}
+                              id="address"
+                              pr="4.5rem"
+                              _placeholder={{ color: "#2D5363" }}
+                              placeholder="Address"
+                            />
+                          </InputGroup>
+                          <FormErrorMessage>
+                            {form.errors.address}
+                          </FormErrorMessage>
+                        </FormControl>
+                      )}
+                    </Field>
+
+                    <Field name="city" validate={validateFields}>
+                      {({ field, form }: any) => (
+                        <FormControl
+                          mt="20px"
+                          isInvalid={form.errors.city && form.touched.city}
+                        >
+                          <FormLabel htmlFor="city" color="#2D5363">
+                            {" "}
+                            City{" "}
+                          </FormLabel>
+
+                          <InputGroup size="md">
+                            <Input
+                              bg="#D5D5D5"
+                              isDisabled={disableed}
+                              {...field}
+                              id="city"
+                              pr="4.5rem"
+                              _placeholder={{ color: "#2D5363" }}
+                              placeholder="city"
+                            />
+                          </InputGroup>
+                          <FormErrorMessage>
+                            {form.errors.city}
+                          </FormErrorMessage>
+                        </FormControl>
+                      )}
+                    </Field>
+
+                    <Field name="state" validate={validateFields}>
+                      {({ field, form }: any) => (
+                        <FormControl
+                          mt="20px"
+                          isInvalid={form.errors.state && form.touched.state}
+                        >
+                          <FormLabel htmlFor="state" color="#2D5363">
+                            {" "}
+                            State{" "}
+                          </FormLabel>
+
+                          <InputGroup size="md">
+                            <Input
+                              bg="#D5D5D5"
+                              isDisabled={disableed}
+                              {...field}
+                              id="state"
+                              pr="4.5rem"
+                              _placeholder={{ color: "#2D5363" }}
+                              placeholder="state"
+                            />
+                          </InputGroup>
+                          <FormErrorMessage>
+                            {form.errors.state}
+                          </FormErrorMessage>
+                        </FormControl>
+                      )}
+                    </Field>
+
+                    <Field name="nextOfKinName" validate={validateFields}>
+                      {({ field, form }: any) => (
+                        <FormControl
+                          mt="20px"
+                          isInvalid={
+                            form.errors.nextOfKinName &&
+                            form.touched.nextOfKinName
+                          }
+                        >
+                          <FormLabel htmlFor="nextOfKinName" color="#2D5363">
+                            {" "}
+                            Next of Kin{" "}
+                          </FormLabel>
+
+                          <InputGroup size="md">
+                            <Input
+                              bg="#D5D5D5"
+                              isDisabled={disableed}
+                              {...field}
+                              id="nextOfKinName"
+                              pr="4.5rem"
+                              _placeholder={{ color: "#2D5363" }}
+                              placeholder="Enter Name of Next Of Kin"
+                            />
+                          </InputGroup>
+                          <FormErrorMessage>
+                            {form.errors.nextOfKinName}
+                          </FormErrorMessage>
+                        </FormControl>
+                      )}
+                    </Field>
+
+                    <Field name="nextOfKinAddress" validate={validateFields}>
+                      {({ field, form }: any) => (
+                        <FormControl
+                          mt="20px"
+                          isInvalid={
+                            form.errors.nextOfKinAddress &&
+                            form.touched.nextOfKinAddress
+                          }
+                        >
+                          <FormLabel htmlFor="nextOfKinAddress" color="#2D5363">
+                            {" "}
+                            Next of Kin Address{" "}
+                          </FormLabel>
+
+                          <InputGroup size="md">
+                            <Input
+                              bg="#D5D5D5"
+                              isDisabled={disableed}
+                              {...field}
+                              id="nextOfKinAddress"
+                              pr="4.5rem"
+                              _placeholder={{ color: "#2D5363" }}
+                              placeholder="Address of Next of Kin"
+                            />
+                          </InputGroup>
+                          <FormErrorMessage>
+                            {form.errors.nextOfKinAddress}
+                          </FormErrorMessage>
+                        </FormControl>
+                      )}
+                    </Field>
+
+                    <Field name="nextOfKinPhone" validate={validateFields}>
+                      {({ field, form }: any) => (
+                        <FormControl
+                          mt="20px"
+                          isInvalid={
+                            form.errors.nextOfKinPhone &&
+                            form.touched.nextOfKinPhone
+                          }
+                        >
+                          <FormLabel htmlFor="lastName" color="#2D5363">
+                            {" "}
+                            Next of Kin Phone Number{" "}
+                          </FormLabel>
+
+                          <InputGroup size="md">
+                            <Input
+                              bg="#D5D5D5"
+                              isDisabled={disableed}
+                              {...field}
+                              id="nextOfKinPhone"
+                              pr="4.5rem"
+                              _placeholder={{ color: "#2D5363" }}
+                              placeholder="Phone Number of Next of Kin"
+                            />
+                          </InputGroup>
+                          <FormErrorMessage>
+                            {form.errors.nextOfKinPhone}
+                          </FormErrorMessage>
+                        </FormControl>
+                      )}
+                    </Field>
+                    <Box textAlign="center" w="full">
+                      <Button
+                        mt={4}
+                        colorScheme="blue"
+                        bg="#046494"
+                        isLoading={props.isSubmitting}
+                        type="submit"
+                        size="md"
+                        color="white"
+                        fontWeight="medium"
+                        rounded="sm"
+                        justify="center"
+                        align="center"
+                        py="0px"
+                        px="30px"
                       >
-                        <FormLabel htmlFor="phone" color="#2D5363">
-                          {" "}
-                          Phone Number{" "}
-                        </FormLabel>
-
-                        <InputGroup size="md">
-                          <Input
-                            bg="#D5D5D5"
-                            {...field}
-                            id="phone"
-                            pr="4.5rem"
-                            type={"tel"}
-                            _placeholder={{ color: "#2D5363" }}
-                            placeholder="Enter phone number"
-                          />
-                        </InputGroup>
-                        <FormErrorMessage>{form.errors.phone}</FormErrorMessage>
-                      </FormControl>
-                    )}
-                  </Field>
-                  <Field name="amount" validate={validateAmount}>
-                    {({ field, form }: any) => (
-                      <FormControl
-                        mt="20px"
-                        isInvalid={form.errors.amount && form.touched.amount}
-                      >
-                        <FormLabel htmlFor="amount" color="#2D5363">
-                          {" "}
-                          Amount{" "}
-                        </FormLabel>
-
-                        <InputGroup size="md">
-                          <Input
-                            bg="#D5D5D5"
-                            {...field}
-                            id="amount"
-                            pr="4.5rem"
-                            type={"number"}
-                            _placeholder={{ color: "#2D5363" }}
-                            placeholder="Enter amount"
-                          />
-                        </InputGroup>
-                        <FormErrorMessage>
-                          {form.errors.amount}
-                        </FormErrorMessage>
-                      </FormControl>
-                    )}
-                  </Field>
-                  <Box textAlign="center" w="full">
-                    <Button
-                      mt={4}
-                      colorScheme="blue"
-                      bg="#046494"
-                      isLoading={props.isSubmitting}
-                      type="submit"
-                      size="md"
-                      color="white"
-                      fontWeight="medium"
-                      rounded="sm"
-                      justify="center"
-                      align="center"
-                      py="0px"
-                      px="30px"
-                    >
-                      Next
-                    </Button>
-                  </Box>
-                </Form>
-              )}
-            </Formik>
+                        Update
+                      </Button>
+                    </Box>
+                  </Form>
+                )}
+              </Formik>
+            )}
           </Box>
         </Box>
       </IonContent>
