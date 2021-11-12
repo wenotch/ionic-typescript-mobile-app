@@ -6,7 +6,7 @@ import { Box, Text, HStack, Flex } from "@chakra-ui/react";
 import Navbar from "../components/Navbar";
 import { useDispatch, useSelector } from "react-redux";
 import { GiWallet } from "react-icons/gi";
-import { fetchBills, fetchUser } from "../Redux/actions/action";
+import { fetchBills, fetchUser, payBills } from "../Redux/actions/action";
 import { Field, Form, Formik } from "formik";
 import {
   FormControl,
@@ -166,8 +166,8 @@ const Utility: React.FC = () => {
                 );
                 if (response.data.message === "Item validated successfully") {
                   onOpen();
-                } else {
-                  toast.error("something went ");
+                } else if (response.status === 500) {
+                  toast.error("something went wrong");
                 }
                 actions.setSubmitting(false);
               }}
@@ -303,18 +303,17 @@ export default Utility;
 // confirmation modal pin
 
 function PinModal({ isOpen, onOpen, onClose, values }: any) {
-  // console.log(values);
-  // const [transactValues, settransactValues] = useState<any>({ ...values });
   let transactValues = { ...values };
   const [isBuying, setisBuying] = useState(false);
   const [value, setValue] = useState("");
+  const dispatch = useDispatch();
   return (
     <>
       <Modal onClose={onClose} size={"full"} isOpen={isOpen}>
         <ModalOverlay />
         <ModalContent bg="white">
           <ModalHeader color="#046494" m="30px" py="10px" px="0">
-            Confirm Data Subscription
+            Confirm Utiliy Subscription
           </ModalHeader>
           <ModalCloseButton color="#046494" fontSize="20px" p="10px" m="30px" />
           <ModalBody>
@@ -376,7 +375,7 @@ function PinModal({ isOpen, onOpen, onClose, values }: any) {
               </HStack>
               <Box textAlign="center" w="full">
                 <Button
-                  isLoading={false}
+                  isLoading={isBuying}
                   mt={6}
                   colorScheme="blue"
                   bg="#046494"
@@ -391,17 +390,9 @@ function PinModal({ isOpen, onOpen, onClose, values }: any) {
                   onClick={async () => {
                     setisBuying(true);
                     transactValues = { ...transactValues, pin: value };
-                    const headers: any = {
-                      Accept: "application/json",
-                      "Content-Type": "application/json;charset=UTF-8",
-                      authorization: window.localStorage.getItem("accessToken"),
-                    };
-                    const response = await axios.get(
-                      "https://paygo.gitit-tech.com/bills/",
-                      {
-                        headers: headers,
-                      }
-                    );
+                    console.log("sent request");
+                    await dispatch(payBills({ transactValues }));
+                    setisBuying(false);
                   }}
                 >
                   Next

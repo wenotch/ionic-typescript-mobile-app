@@ -86,8 +86,8 @@ export const fetchBills = () => {
   };
 };
 //paybills action
-export const payBills = ({ transactValues, type }) => {
-  console.log(transactValues);
+export const payBills = ({ transactValues }) => {
+  console.log(transactValues.biller_name);
   const et = {
     recurring: false,
     intervalInDays: 0,
@@ -96,7 +96,7 @@ export const payBills = ({ transactValues, type }) => {
       country: "NG",
       customer: transactValues.phone,
       amount: transactValues.amount,
-      type: type,
+      type: transactValues.biller_name,
     },
   };
 

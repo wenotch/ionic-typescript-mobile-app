@@ -397,7 +397,7 @@ function PinModal({ isOpen, onOpen, onClose, values }: any) {
                     setisBuying(true);
                     transactValues = { ...transactValues, pin: value };
                     console.log("sent request");
-                    await dispatch(payBills({ transactValues, type: "DATA" }));
+                    await dispatch(payBills({ transactValues }));
                     setisBuying(false);
                   }}
                 >

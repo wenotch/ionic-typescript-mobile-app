@@ -27,7 +27,7 @@ import {
   ModalBody,
 } from "@chakra-ui/modal";
 import { useDisclosure } from "@chakra-ui/hooks";
-import { PinInput, PinInputField } from "@chakra-ui/pin-input"; 
+import { PinInput, PinInputField } from "@chakra-ui/pin-input";
 
 const BuyAirtime: React.FC = () => {
   // all my states
@@ -67,8 +67,7 @@ const BuyAirtime: React.FC = () => {
       error = "Amount is required";
     } else if (value < 100) {
       error = "Min amount is N100";
-    }
-    else if (state.user.length !== 0 && value > state.user[0].balance) {
+    } else if (state.user.length !== 0 && value > state.user[0].balance) {
       error = "You do not have that amount in your wallet";
     }
     return error;
@@ -357,9 +356,7 @@ function PinModal({ isOpen, onOpen, onClose, values }: any) {
                     setisBuying(true);
                     transactValues = { ...transactValues, pin: value };
                     console.log("sent request");
-                    await dispatch(
-                      payBills({ transactValues, type: "AIRTIME" })
-                    );
+                    await dispatch(payBills({ transactValues }));
                     setisBuying(false);
                   }}
                 >
