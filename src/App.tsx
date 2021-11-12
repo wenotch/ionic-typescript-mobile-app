@@ -37,6 +37,7 @@ import Menu from "./pages/Menu";
 import TransactionPage from "./pages/Transactions";
 import AddMoney from "./pages/AddMoney";
 import Profile from "./pages/Profile";
+import UpdateProfile from "./pages/UpdateProfile";
 const App: React.FC = () => {
   return (
     <IonApp>
@@ -86,6 +87,12 @@ const App: React.FC = () => {
               path="/add-money"
               exact={true}
               component={AddMoney}
+            />
+
+            <ProtectedRoute
+              path="/update-profile"
+              exact={true}
+              component={UpdateProfile}
             />
             <ProtectedRoute path="/Profile" exact={true} component={Profile} />
           </IonRouterOutlet>

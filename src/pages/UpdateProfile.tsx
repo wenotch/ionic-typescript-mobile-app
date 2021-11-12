@@ -18,18 +18,9 @@ import { Button } from "@chakra-ui/button";
 import axios from "axios";
 import { Select } from "@chakra-ui/select";
 import toast from "react-hot-toast";
-import {
-  ModalCloseButton,
-  ModalOverlay,
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-} from "@chakra-ui/modal";
 import { useDisclosure } from "@chakra-ui/hooks";
-import { PinInput, PinInputField } from "@chakra-ui/pin-input";
 
-const BuyAirtime: React.FC = () => {
+const UpdateProfile: React.FC = () => {
   // all my states
   const state = useSelector((state: any) => state);
   //filters all possible by aitime providers from bills list in the redux store
@@ -96,16 +87,6 @@ const BuyAirtime: React.FC = () => {
                 Back
               </Box>
             </IonRouterLink>
-          </Box>
-          <Box bg="#046494" mx="30px" px="50px" py="30px" rounded="lg">
-            <Icon as={GiWallet} w={8} h={8} color="#fff" mb="2px" />
-            <Text fontWeight="normal" color="white" fontSize="14px">
-              Wallet Balance
-            </Text>
-            <Text color="#E7BF00" fontWeight="semibold" fontSize="2xl">
-              {" "}
-              N{state.user.length === 0 ? "loading" : state.user[0].balance}
-            </Text>
           </Box>
           <Box
             w={{ base: "100%", md: "468px" }}
@@ -266,11 +247,6 @@ const BuyAirtime: React.FC = () => {
                 </Form>
               )}
             </Formik>
-            <PinModal
-              isOpen={isOpen}
-              onClose={onClose}
-              values={transactionValues}
-            />
           </Box>
         </Box>
       </IonContent>
@@ -278,101 +254,4 @@ const BuyAirtime: React.FC = () => {
   );
 };
 
-export default BuyAirtime;
-
-// confirmation modal pin
-
-function PinModal({ isOpen, onOpen, onClose, values }: any) {
-  let transactValues = { ...values };
-  const [isBuying, setisBuying] = useState(false);
-  const [value, setValue] = useState("");
-  const dispatch = useDispatch();
-  return (
-    <>
-      <Modal onClose={onClose} size={"full"} isOpen={isOpen}>
-        <ModalOverlay />
-        <ModalContent bg="white">
-          <ModalHeader color="#046494" m="30px" py="10px" px="0">
-            Confirm Airtime
-          </ModalHeader>
-          <ModalCloseButton color="#046494" fontSize="20px" p="10px" m="30px" />
-          <ModalBody>
-            <Flex
-              direction="column"
-              justify="center"
-              mt="50%"
-              transform="translateY(-50%)"
-              mx="auto"
-            >
-              {" "}
-              <Text color="grey" fontSize="16px">
-                You are about to purchase an airtime of{" "}
-                <Text
-                  as="span"
-                  fontSize="xl"
-                  fontWeight="medium"
-                  color="#046494"
-                >
-                  N{values.amount}
-                </Text>{" "}
-                for the phone number{" "}
-                <Text
-                  as="span"
-                  fontSize="xl"
-                  fontWeight="medium"
-                  color="#046494"
-                >
-                  {values.phone}.
-                </Text>
-                Enter your Pin to confirm transaction
-              </Text>
-              <HStack justify="center" mt="20px">
-                {" "}
-                <PinInput
-                  mask
-                  colorScheme="white"
-                  onChange={(e: any) => {
-                    setValue(e);
-                  }}
-                  onComplete={(e: any) => {
-                    setValue(e);
-                  }}
-                >
-                  <PinInputField bg="grey" />
-                  <PinInputField bg="grey" />
-                  <PinInputField bg="grey" />
-                  <PinInputField bg="grey" />
-                </PinInput>
-              </HStack>
-              <Box textAlign="center" w="full">
-                <Button
-                  isLoading={isBuying}
-                  mt={6}
-                  colorScheme="blue"
-                  bg="#046494"
-                  size="md"
-                  color="white"
-                  fontWeight="medium"
-                  rounded="sm"
-                  justify="center"
-                  align="center"
-                  py="0px"
-                  px="30px"
-                  onClick={async () => {
-                    setisBuying(true);
-                    transactValues = { ...transactValues, pin: value };
-                    console.log("sent request");
-                    await dispatch(payBills({ transactValues }));
-                    setisBuying(false);
-                  }}
-                >
-                  Next
-                </Button>
-              </Box>
-            </Flex>
-          </ModalBody>
-        </ModalContent>
-      </Modal>
-    </>
-  );
-}
+export default UpdateProfile;

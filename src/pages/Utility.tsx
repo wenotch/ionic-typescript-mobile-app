@@ -128,7 +128,13 @@ const Utility: React.FC = () => {
             </Text>
           </Box>
 
-          <Box w={{ base: "100%", md: "468px" }} bg="white" mt="50px" px="30px">
+          <Box
+            w={{ base: "100%", md: "468px" }}
+            bg="white"
+            mt="50px"
+            px="30px"
+            pb="11vh"
+          >
             <Text
               textAlign="center"
               fontWeight="semibold"
