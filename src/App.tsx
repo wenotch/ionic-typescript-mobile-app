@@ -49,54 +49,45 @@ const App: React.FC = () => {
             <Route path="/login" exact={true}>
               <Login />
             </Route>
-            <Route path="/buy-airtime" exact={true}>
-              <BuyAirtime />
-            </Route>
-            <Route path="/buy-data" exact={true}>
-              <BuyData />
-            </Route>
-
-            <Route path="/buy-cable" exact={true}>
-              <CableTv />
-            </Route>
-
-            <Route path="/utility" exact={true}>
-              <Utility />
-            </Route>
-
-            <Route path="/menu" exact={true}>
-              <Menu />
-            </Route>
-
             <Route path="/forgot" exact={true}>
               <ForgotPassword />
             </Route>
-
             <Route path="/signup" exact={true}>
               <Register />
             </Route>
-
-            <Route path="/transactions" exact={true}>
-              <TransactionPage />
-            </Route>
-
-            <Route path="/profile" exact={true}>
-              <Profile />
-            </Route>
-
-            <Route path="/add-money" exact={true}>
-              <AddMoney />
-            </Route>
-
+            {/* protected Routes */}
             <Route path="/bvn-verification" exact={true}>
               <Verification />
             </Route>
-
             <ProtectedRoute
               path="/dashboard"
               exact={true}
               component={Dashboard}
             />
+            <ProtectedRoute
+              path="/buy-airtime"
+              exact={true}
+              component={BuyAirtime}
+            />
+            <ProtectedRoute path="/buy-data" exact={true} component={BuyData} />
+            <ProtectedRoute
+              path="/buy-cable"
+              exact={true}
+              component={CableTv}
+            />
+            <ProtectedRoute path="/utility" exact={true} component={Utility} />
+            <ProtectedRoute path="/menu" exact={true} component={Menu} />
+            <ProtectedRoute
+              path="/transactions"
+              exact={true}
+              component={TransactionPage}
+            />
+            <ProtectedRoute
+              path="/add-money"
+              exact={true}
+              component={AddMoney}
+            />
+            <ProtectedRoute path="/Profile" exact={true} component={Profile} />
           </IonRouterOutlet>
         </IonSplitPane>
       </IonReactRouter>

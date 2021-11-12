@@ -53,8 +53,6 @@ const Dashboard: React.FC = () => {
               transactionId="556456848"
             />
           </Box>
-
-          {/* <BottomNav /> */}
         </Box>
       </IonContent>
     </IonPage>

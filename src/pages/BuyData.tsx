@@ -6,7 +6,7 @@ import { Box, Text, HStack, Flex } from "@chakra-ui/react";
 import Navbar from "../components/Navbar";
 import { useDispatch, useSelector } from "react-redux";
 import { GiWallet } from "react-icons/gi";
-import { fetchBills, fetchUser } from "../Redux/actions/action";
+import { fetchBills, fetchUser, payBills } from "../Redux/actions/action";
 import { Field, Form, Formik } from "formik";
 import {
   FormControl,
@@ -28,7 +28,6 @@ import {
 } from "@chakra-ui/modal";
 import { useDisclosure } from "@chakra-ui/hooks";
 import { PinInput, PinInputField } from "@chakra-ui/pin-input";
-import { dispatch } from "react-hot-toast/dist/core/store";
 
 const BuyData: React.FC = () => {
   // all my states
@@ -313,6 +312,7 @@ function PinModal({ isOpen, onOpen, onClose, values }: any) {
   let transactValues = { ...values };
   const [isBuying, setisBuying] = useState(false);
   const [value, setValue] = useState("");
+  const dispatch = useDispatch();
   return (
     <>
       <Modal onClose={onClose} size={"full"} isOpen={isOpen}>
@@ -381,7 +381,7 @@ function PinModal({ isOpen, onOpen, onClose, values }: any) {
               </HStack>
               <Box textAlign="center" w="full">
                 <Button
-                  isLoading={false}
+                  isLoading={isBuying}
                   mt={6}
                   colorScheme="blue"
                   bg="#046494"
@@ -396,17 +396,9 @@ function PinModal({ isOpen, onOpen, onClose, values }: any) {
                   onClick={async () => {
                     setisBuying(true);
                     transactValues = { ...transactValues, pin: value };
-                    const headers: any = {
-                      Accept: "application/json",
-                      "Content-Type": "application/json;charset=UTF-8",
-                      authorization: window.localStorage.getItem("accessToken"),
-                    };
-                    const response = await axios.get(
-                      "https://paygo.gitit-tech.com/bills/",
-                      {
-                        headers: headers,
-                      }
-                    );
+                    console.log("sent request");
+                    await dispatch(payBills({ transactValues, type: "DATA" }));
+                    setisBuying(false);
                   }}
                 >
                   Next
