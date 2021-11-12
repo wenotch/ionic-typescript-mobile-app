@@ -33,6 +33,7 @@ const Menu: React.FC = () => {
             Menu
           </Text>
           <Flex
+            mx="30px"
             onClick={() => history.push("/add-money")}
             px="30px"
             py="15px"
@@ -49,6 +50,7 @@ const Menu: React.FC = () => {
             </Text>
           </Flex>{" "}
           <Flex
+            mx="30px"
             mt="3px"
             onClick={() => history.push("/send-money")}
             px="30px"
@@ -66,6 +68,7 @@ const Menu: React.FC = () => {
             </Text>
           </Flex>
           <Flex
+            mx="30px"
             mt="3px"
             onClick={() => history.push("/buy-airtime")}
             px="30px"
@@ -83,6 +86,7 @@ const Menu: React.FC = () => {
             </Text>
           </Flex>{" "}
           <Flex
+            mx="30px"
             mt="3px"
             onClick={() => history.push("/buy-data")}
             px="30px"
@@ -100,6 +104,7 @@ const Menu: React.FC = () => {
             </Text>
           </Flex>{" "}
           <Flex
+            mx="30px"
             mt="3px"
             onClick={() => history.push("/buy-cable")}
             px="30px"
@@ -118,6 +123,7 @@ const Menu: React.FC = () => {
           </Flex>{" "}
           <Flex
             mt="3px"
+            mx="30px"
             onClick={() => history.push("/utility")}
             px="30px"
             py="15px"
@@ -134,6 +140,7 @@ const Menu: React.FC = () => {
             </Text>
           </Flex>{" "}
           <Flex
+            mx="30px"
             mt="3px"
             onClick={() => history.push("/profile")}
             px="30px"
@@ -151,6 +158,7 @@ const Menu: React.FC = () => {
             </Text>
           </Flex>{" "}
           <Flex
+            mx="30px"
             mt="3px"
             onClick={() => history.push("/transactions")}
             px="30px"

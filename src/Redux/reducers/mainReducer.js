@@ -1,5 +1,4 @@
-const initialState = {
-  name: "Emmanuel Nwanochie",
+const initialState = { 
   user: [],
   bills: [],
 
