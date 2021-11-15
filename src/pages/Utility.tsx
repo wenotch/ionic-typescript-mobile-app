@@ -153,7 +153,7 @@ const Utility: React.FC = () => {
                 });
 
                 settransactionValues({ ...data[0], ...values });
-                console.log(transactionValues);
+
                 const headers: any = {
                   Accept: "application/json",
                   "Content-Type": "application/json;charset=UTF-8",
@@ -396,7 +396,6 @@ function PinModal({ isOpen, onOpen, onClose, values }: any) {
                   onClick={async () => {
                     setisBuying(true);
                     transactValues = { ...transactValues, pin: value };
-                    console.log("sent request");
                     await dispatch(payBills({ transactValues }));
                     setisBuying(false);
                   }}

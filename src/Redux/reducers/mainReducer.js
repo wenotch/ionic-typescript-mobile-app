@@ -1,7 +1,7 @@
-const initialState = { 
+const initialState = {
   user: [],
   bills: [],
-
+  newUser: {},
   // all loading states
   isLoading: false,
 };
@@ -27,6 +27,12 @@ export const mainReducer = (state = initialState, action) => {
       return {
         ...state,
         isLoading: false,
+      };
+
+    case "REGISTER":
+      return {
+        ...state,
+        newUser: action.payload,
       };
     default:
       return state;

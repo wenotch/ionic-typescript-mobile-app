@@ -40,8 +40,7 @@ const UpdateProfile: React.FC = () => {
       //   setdisableed(false);
       setcurrentUser(state.user[0].owner);
     }
-  });
-  console.log(currentUser);
+  }); 
 
   const [disableed, setdisableed] = useState(false);
 

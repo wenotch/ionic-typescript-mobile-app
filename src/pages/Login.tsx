@@ -62,7 +62,7 @@ const Login: React.FC = () => {
 
     if (userData.email === "" || userData.password === "") {
       setErrorMessage((prevState) => ({
-        value: "Empty username/password field",
+        value: "Ops! all fields are required",
       }));
     } else {
       dispatch({

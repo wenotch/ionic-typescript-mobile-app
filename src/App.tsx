@@ -39,6 +39,8 @@ import AddMoney from "./pages/AddMoney";
 import Profile from "./pages/Profile";
 import UpdateProfile from "./pages/UpdateProfile";
 import UpdatePassword from "./pages/UpdatePassword";
+import EmailVerification from "./pages/EmailVerification";
+import ResetPasswordVerification from "./pages/ResetPasswordVerification";
 const App: React.FC = () => {
   return (
     <IonApp>
@@ -50,6 +52,12 @@ const App: React.FC = () => {
             </Route>
             <Route path="/login" exact={true}>
               <Login />
+            </Route>
+            <Route path="/verification" exact={true}>
+              <EmailVerification />
+            </Route>
+            <Route path="/verify-reset" exact={true}>
+              <ResetPasswordVerification />
             </Route>
             <Route path="/forgot" exact={true}>
               <ForgotPassword />

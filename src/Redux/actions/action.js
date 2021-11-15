@@ -22,6 +22,7 @@ export const login = (userData) => {
 
     Axios(options)
       .then((response) => {
+        console.log(response.data);
         window.localStorage.setItem("accessToken", response.data.authorization);
         history.push("/dashboard");
         dispatch({ type: "NOTLOADING" });
@@ -158,9 +159,10 @@ export const updateProfile = (values) => {
 //Change Password
 export const changePassword = (values) => {
   return async (dispatch, getState) => {
-    console.log(values);
-    const user = values;
     const state = getState();
+    const email = state.user[0].owner.email;
+    const user = { ...values, email: email };
+    console.log(user);
     const options = {
       url: baseUrl + "/users/password",
       method: "patch",
@@ -182,6 +184,71 @@ export const changePassword = (values) => {
       })
       .catch((error) => {
         toast.error(error.message);
+      });
+  };
+};
+
+//Change Password from within the app
+export const resetPassword = (value) => {
+  return async (dispatch, getState) => {
+    const state = getState();
+    const email = state.newUser.email;
+    const user = { ...value, email: email };
+    console.log(user);
+    const options = {
+      url: baseUrl + "/users/password",
+      method: "patch",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json;charset=UTF-8",
+        authorization: window.localStorage.getItem("accessToken"),
+      },
+      data: user,
+    };
+
+    Axios(options)
+      .then(async (response) => {
+        if (response.data.status === 200) {
+          toast.success("Password Changed");
+          history.push("/dashboard");
+        }
+        toast.success("Successfully");
+      })
+      .catch((error) => {
+        toast.error(error.message);
+      });
+  };
+};
+
+//Change Password from outside the app
+export const resetPasswordTwo = (value) => {
+  return async (dispatch, getState) => {
+    const state = getState();
+    const email = state.newUser.email;
+    const user = { ...value, email: email };
+    console.log(user);
+    const options = {
+      url: baseUrl + "/users/password",
+      method: "patch",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json;charset=UTF-8",
+      },
+      data: user,
+    };
+
+    Axios(options)
+      .then(async (response) => {
+        if (response.data.status === 200) {
+          toast.success("Password Changed");
+          history.push("/login");
+        }
+
+        dispatch({ type: "NOTLOADING" });
+      })
+      .catch((error) => {
+        toast.error(error.response.data.message);
+        dispatch({ type: "NOTLOADING" });
       });
   };
 };
@@ -213,6 +280,112 @@ export const changePin = (values) => {
       })
       .catch((error) => {
         toast.error(error.message);
+      });
+  };
+};
+
+//login action
+export const register = (userData) => {
+  console.log(userData);
+  return async (dispatch, getState) => {
+    const options = {
+      url: baseUrl + "/users",
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json;charset=UTF-8",
+      },
+      data: userData,
+    };
+
+    Axios(options)
+      .then((response) => {
+        window.localStorage.setItem("accessToken", response.data.authorization);
+        history.push("/verification");
+        dispatch({ type: "NOTLOADING" });
+      })
+      .catch((error) => {
+        if (error.response.data.status === 6005) {
+          toast.error("Email or Phone Number Already Registered");
+        } else {
+          toast.error("Something went wrong try again");
+        }
+        dispatch({ type: "NOTLOADING" });
+      });
+  };
+};
+
+//updateUserProfile
+export const verifyEmail = (values) => {
+  return async (dispatch, getState) => {
+    console.log(values);
+    const state = getState();
+    const email = state.newUser.email;
+    const user = { code: values, id: email };
+    console.log(user);
+    const options = {
+      url: baseUrl + "/users/verification",
+      method: "put",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json;charset=UTF-8",
+      },
+      data: user,
+    };
+
+    Axios(options)
+      .then(async (response) => {
+        toast.success("Verified");
+        history.push("/dashboard");
+      })
+      .catch((error) => {
+        if (error.response.data.status === 6003) {
+          toast.error(
+            "you have entered an expired or Invalid OTP. Request again"
+          );
+        } else if (error.response.data.status === 6002) {
+          toast.error("empty input");
+        } else {
+          toast.error("Something went wrong");
+        }
+        console.log(error.response.data);
+        dispatch({ type: "NOTLOADING" });
+      });
+  };
+};
+
+//forgotPassword
+export const forgotPassword = (userData) => {
+  console.log(userData);
+  return async (dispatch, getState) => {
+    const options = {
+      url: baseUrl + "/reset-password",
+      method: "post",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json;charset=UTF-8",
+      },
+      data: userData,
+    };
+
+    Axios(options)
+      .then(async (response) => {
+        toast.success("Verifiication code sent");
+        history.push("/verify-reset");
+        dispatch({ type: "NOTLOADING" });
+      })
+      .catch((error) => {
+        if (error.response.data.status === 6003) {
+          toast.error(
+            "you have entered an expired or Invalid OTP. Request again"
+          );
+        } else if (error.response.data.status === 6002) {
+          toast.error("empty input");
+        } else {
+          toast.error("Something went wrong");
+        }
+        console.log(error.response.data);
+        dispatch({ type: "NOTLOADING" });
       });
   };
 };

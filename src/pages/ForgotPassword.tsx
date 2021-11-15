@@ -25,14 +25,53 @@ import {
   FormControl,
 } from "@chakra-ui/react";
 import { FaUserAlt, FaLock } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
+import { forgotPassword } from "../Redux/actions/action";
 
 const CFaUserAlt = chakra(FaUserAlt);
 const CFaLock = chakra(FaLock);
 
 const ForgotPassword: React.FC = () => {
-  const [showPassword, setShowPassword] = useState(false);
+  //getting complete state from redux
+  const state = useSelector((state: any) => state);
+  const isLoading = state.isLoading;
+  const [userData, setuserData] = useState({
+    email: "",
+  });
 
-  const handleShowClick = () => setShowPassword(!showPassword);
+  const handleInputChange = (e: any) => {
+    setuserData((prevState: any) => {
+      return {
+        ...prevState,
+        [e.target.name]: e.target.value,
+      };
+    });
+  };
+
+  const [errorMessage, setErrorMessage] = useState({ value: "" });
+
+  //init useDispatch
+  const dispatch = useDispatch();
+
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
+
+    if (userData.email === "") {
+      setErrorMessage((prevState) => ({
+        value: "Ops! all fields are required",
+      }));
+    } else {
+      dispatch({
+        type: "LOADING",
+      });
+      dispatch({
+        type: "REGISTER",
+        payload: userData,
+      });
+      dispatch(forgotPassword(userData));
+    }
+  };
+
   return (
     <IonPage>
       <IonContent fullscreen>
@@ -76,9 +115,10 @@ const ForgotPassword: React.FC = () => {
                         />
                         <Input
                           type="email"
+                          name="email"
+                          onChange={handleInputChange}
                           placeholder="Email address"
                           _placeholder={{ color: "#046494" }}
-                          //   outlineColor="gray.400"
                           bg="gray.300"
                           rounded="md"
                         />
@@ -87,7 +127,9 @@ const ForgotPassword: React.FC = () => {
 
                     <Button
                       borderRadius={0}
-                      type="submit"
+                      isLoading={isLoading}
+                      _hover={{ bg: "blue.500" }}
+                      onClick={handleSubmit}
                       variant="solid"
                       bg="#046494"
                       color="white"

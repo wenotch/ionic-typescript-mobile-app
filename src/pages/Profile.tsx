@@ -1,13 +1,10 @@
 import { useHistory } from "react-router-dom";
-import Icon from "@chakra-ui/icon";
 import { IonContent, IonPage } from "@ionic/react";
 import React from "react";
 import { useEffect } from "react";
 import { Box, Text, Button, Flex, Avatar } from "@chakra-ui/react";
 import Navbar from "../components/Navbar";
-import QuickLinks from "../components/QuickLinks";
 import { useDispatch, useSelector } from "react-redux";
-import { GiWallet } from "react-icons/gi";
 import { fetchUser } from "../Redux/actions/action";
 
 const Profile: React.FC = () => {
@@ -53,11 +50,13 @@ const Profile: React.FC = () => {
               textAlign="center"
             >
               <Avatar src="https://bit.ly/broken-link" />
-             {state.user.length > 0 && ( <Text color="white" mt="10px">
-                {state.user[0].owner.firstName +
-                  " " +
-                  state.user[0].owner.lastName}
-              </Text>)}
+              {state.user.length > 0 && (
+                <Text color="white" mt="10px">
+                  {state.user[0].owner.firstName +
+                    " " +
+                    state.user[0].owner.lastName}
+                </Text>
+              )}
             </Box>
             <Flex
               rounded="md"
@@ -140,6 +139,7 @@ const Profile: React.FC = () => {
             >
               <Box w="full" textAlign="left">
                 <Button
+                  isDisabled
                   onClick={() => {
                     history.push("/agent");
                   }}
