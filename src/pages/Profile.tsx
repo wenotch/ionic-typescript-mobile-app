@@ -53,11 +53,11 @@ const Profile: React.FC = () => {
               textAlign="center"
             >
               <Avatar src="https://bit.ly/broken-link" />
-              <Text color="white" mt="10px">
+             {state.user.length > 0 && ( <Text color="white" mt="10px">
                 {state.user[0].owner.firstName +
                   " " +
                   state.user[0].owner.lastName}
-              </Text>
+              </Text>)}
             </Box>
             <Flex
               rounded="md"

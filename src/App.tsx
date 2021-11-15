@@ -37,7 +37,8 @@ import Menu from "./pages/Menu";
 import TransactionPage from "./pages/Transactions";
 import AddMoney from "./pages/AddMoney";
 import Profile from "./pages/Profile";
-import UpdateProfile from "./pages/UpdateProfile"; 
+import UpdateProfile from "./pages/UpdateProfile";
+import UpdatePassword from "./pages/UpdatePassword";
 const App: React.FC = () => {
   return (
     <IonApp>
@@ -94,7 +95,13 @@ const App: React.FC = () => {
               exact={true}
               component={UpdateProfile}
             />
-            <ProtectedRoute path="/Profile" exact={true} component={Profile} />
+            <ProtectedRoute
+              path="/change-password"
+              exact={true}
+              component={UpdatePassword}
+            />
+
+            <ProtectedRoute path="/profile" exact={true} component={Profile} />
           </IonRouterOutlet>
         </IonSplitPane>
       </IonReactRouter>

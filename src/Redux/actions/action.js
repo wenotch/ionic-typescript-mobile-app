@@ -154,3 +154,65 @@ export const updateProfile = (values) => {
       });
   };
 };
+
+//Change Password
+export const changePassword = (values) => {
+  return async (dispatch, getState) => {
+    console.log(values);
+    const user = values;
+    const state = getState();
+    const options = {
+      url: baseUrl + "/users/password",
+      method: "patch",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json;charset=UTF-8",
+        authorization: window.localStorage.getItem("accessToken"),
+      },
+      data: user,
+    };
+
+    Axios(options)
+      .then(async (response) => {
+        if (response.data.status === 200) {
+          toast.success("Password Changed");
+          history.push("/dashboard");
+        }
+        toast.success("Successfully");
+      })
+      .catch((error) => {
+        toast.error(error.message);
+      });
+  };
+};
+
+//Change Pin
+export const changePin = (values) => {
+  return async (dispatch, getState) => {
+    console.log(values);
+    const user = values;
+    const state = getState();
+    const options = {
+      url: baseUrl + "/users/password",
+      method: "patch",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json;charset=UTF-8",
+        authorization: window.localStorage.getItem("accessToken"),
+      },
+      data: user,
+    };
+
+    Axios(options)
+      .then(async (response) => {
+        if (response.data.status === 200) {
+          toast.success("Password Changed");
+          history.push("/dashboard");
+        }
+        toast.success("Successfully");
+      })
+      .catch((error) => {
+        toast.error(error.message);
+      });
+  };
+};
