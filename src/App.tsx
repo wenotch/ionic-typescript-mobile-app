@@ -35,13 +35,16 @@ import CableTv from "./pages/CableTv";
 import Utility from "./pages/Utility";
 import Menu from "./pages/Menu";
 import TransactionPage from "./pages/Transactions";
-import AddMoney from "./pages/AddMoney";
+import AddMoney from "./pages/WithCard";
 import Profile from "./pages/Profile";
 import UpdateProfile from "./pages/UpdateProfile";
 import UpdatePassword from "./pages/UpdatePassword";
 import EmailVerification from "./pages/EmailVerification";
 import ResetPasswordVerification from "./pages/ResetPasswordVerification";
 import CreatePin from "./pages/CreatePin";
+import AddMoneyMethod from "./pages/AddMoneyMethod";
+import WithCard from "./pages/WithCard";
+import AddCard from "./pages/AddCard";
 const App: React.FC = () => {
   return (
     <IonApp>
@@ -96,7 +99,7 @@ const App: React.FC = () => {
             <ProtectedRoute
               path="/add-money"
               exact={true}
-              component={AddMoney}
+              component={AddMoneyMethod}
             />
 
             <ProtectedRoute
@@ -115,6 +118,16 @@ const App: React.FC = () => {
               exact={true}
               component={CreatePin}
             />
+
+            <ProtectedRoute
+              path="/with-card"
+              exact={true}
+              component={WithCard}
+            />
+
+            <ProtectedRoute path="/add-card" exact={true} component={AddCard} />
+
+            <ProtectedRoute path="/addcard" exact={true} component={WithCard} />
 
             <ProtectedRoute path="/profile" exact={true} component={Profile} />
           </IonRouterOutlet>
