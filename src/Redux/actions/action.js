@@ -20,6 +20,16 @@ export const login = (userData) => {
       data: userData,
     };
 
+    //to call axios
+    const optionstwo = {
+      url: baseUrl + "/users/" + userData.email + "/verification",
+      method: "get",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json;charset=UTF-8",
+      },
+    };
+
     Axios(options)
       .then((response) => {
         console.log(response.data);
@@ -28,8 +38,28 @@ export const login = (userData) => {
         dispatch({ type: "NOTLOADING" });
       })
       .catch((error) => {
-        toast.error("Invalid username and password");
-        dispatch({ type: "NOTLOADING" });
+        if (
+          error.response.data.message ===
+          "Check your inbox to confirm your email address"
+        ) {
+          Axios(optionstwo)
+            .then((response) => {
+              history.push("/verification");
+              dispatch({ type: "NOTLOADING" });
+            })
+            .catch((error) => {
+              toast.error("Something went wrong");
+              dispatch({ type: "NOTLOADING" });
+            });
+        } else if (
+          (error.response.data.message = "Invalid login credentials")
+        ) {
+          toast.error("Invalid Credentials");
+          dispatch({ type: "NOTLOADING" });
+        } else {
+          toast.error("something went wrong");
+          dispatch({ type: "NOTLOADING" });
+        }
       });
   };
 };
@@ -177,13 +207,13 @@ export const changePassword = (values) => {
     Axios(options)
       .then(async (response) => {
         if (response.data.status === 200) {
-          toast.success("Password Changed");
+          toast.success("Succesffuly set Pin");
           history.push("/dashboard");
         }
         toast.success("Successfully");
       })
       .catch((error) => {
-        toast.error(error.message);
+        toast.error(error.response.data.message);
       });
   };
 };
@@ -239,15 +269,15 @@ export const resetPasswordTwo = (value) => {
 
     Axios(options)
       .then(async (response) => {
-        if (response.data.status === 200) {
+        if (response.status === 200) {
           toast.success("Password Changed");
           history.push("/login");
+          dispatch({ type: "NOTLOADING" });
         }
-
-        dispatch({ type: "NOTLOADING" });
+        console.log(response);
       })
       .catch((error) => {
-        toast.error(error.response.data.message);
+        toast.error(error.message);
         dispatch({ type: "NOTLOADING" });
       });
   };
@@ -337,6 +367,7 @@ export const verifyEmail = (values) => {
       .then(async (response) => {
         toast.success("Verified");
         history.push("/dashboard");
+        dispatch({ type: "NOTLOADING" });
       })
       .catch((error) => {
         if (error.response.data.status === 6003) {
@@ -386,6 +417,38 @@ export const forgotPassword = (userData) => {
         }
         console.log(error.response.data);
         dispatch({ type: "NOTLOADING" });
+      });
+  };
+};
+
+//Change Password
+export const setPin = (values) => {
+  return async (dispatch, getState) => {
+    const state = getState();
+    const email = state.user[0].owner.email;
+    const user = { ...values, email: email };
+    console.log(user);
+    const options = {
+      url: baseUrl + "/create-pin",
+      method: "post",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json;charset=UTF-8",
+        authorization: window.localStorage.getItem("accessToken"),
+      },
+      data: user,
+    };
+
+    Axios(options)
+      .then(async (response) => {
+        if (response.data.status === 200) {
+          toast.success(" Pin Set");
+          history.push("/dashboard");
+        }
+        toast.success("Successfully");
+      })
+      .catch((error) => {
+        toast.error(error.response.data.message);
       });
   };
 };

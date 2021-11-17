@@ -2,7 +2,6 @@ import { Image } from "@chakra-ui/image";
 // import { Box } from "@chakra-ui/layout";
 import { IonContent, IonPage } from "@ionic/react";
 import React from "react";
-import logo from "../images/paygo.png";
 import { useState } from "react";
 import { FaUserAlt, FaLock } from "react-icons/fa";
 import { PinInput, PinInputField } from "@chakra-ui/pin-input";
@@ -86,6 +85,7 @@ const ResetPasswordVerification: React.FC = () => {
                     setValue(e);
                   }}
                 >
+                  <PinInputField bg="white" />
                   <PinInputField bg="white" />
                   <PinInputField bg="white" />
                   <PinInputField bg="white" />

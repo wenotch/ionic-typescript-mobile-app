@@ -1,4 +1,3 @@
-import Icon from "@chakra-ui/icon";
 import { IonContent, IonPage, IonRouterLink } from "@ionic/react";
 import React from "react";
 import { useEffect, useState } from "react";
@@ -19,8 +18,7 @@ import {
 } from "@chakra-ui/form-control";
 import {
   Input,
-  InputGroup,
-  InputLeftElement,
+  InputGroup, 
   InputRightElement,
 } from "@chakra-ui/input";
 import { Button } from "@chakra-ui/button";

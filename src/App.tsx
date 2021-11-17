@@ -41,6 +41,7 @@ import UpdateProfile from "./pages/UpdateProfile";
 import UpdatePassword from "./pages/UpdatePassword";
 import EmailVerification from "./pages/EmailVerification";
 import ResetPasswordVerification from "./pages/ResetPasswordVerification";
+import CreatePin from "./pages/CreatePin";
 const App: React.FC = () => {
   return (
     <IonApp>
@@ -107,6 +108,12 @@ const App: React.FC = () => {
               path="/change-password"
               exact={true}
               component={UpdatePassword}
+            />
+
+            <ProtectedRoute
+              path="/create-pin"
+              exact={true}
+              component={CreatePin}
             />
 
             <ProtectedRoute path="/profile" exact={true} component={Profile} />

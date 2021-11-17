@@ -92,17 +92,18 @@ const Profile: React.FC = () => {
               <Box w="full" textAlign="left">
                 <Button
                   onClick={() => {
-                    history.push("/change-pin");
+                    history.push("/create-pin");
                   }}
                   w="full"
                   px="30px"
                   py="30px"
+                  // isDisabled
                   colorScheme="whiteAlpha"
                   justifyContent="left"
                   fontWeight="normal"
                   color="black"
                 >
-                  Change Pin
+                  Set Pin
                 </Button>
               </Box>
             </Flex>{" "}
