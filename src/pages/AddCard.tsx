@@ -1,6 +1,6 @@
 import { useHistory } from "react-router-dom";
 
-import { IonContent, IonPage } from "@ionic/react";
+import { IonContent, IonPage, IonRouterLink } from "@ionic/react";
 import React from "react";
 import { useEffect, useState } from "react";
 import { Box, Text, Select } from "@chakra-ui/react";
@@ -11,22 +11,24 @@ import axios from "axios";
 import { Field, Form, Formik } from "formik";
 import { Button } from "@chakra-ui/button";
 import { usePaystackPayment } from "react-paystack";
+import toast from "react-hot-toast";
 
 const AddCard: React.FC = () => {
   const state = useSelector((state: any) => state);
   const dispatch = useDispatch();
+  const history = useHistory();
 
   useEffect(() => {
     dispatch(fetchUser());
   }, []);
-  
+
   const [currentUser, setcurrentUser] = useState<any>("");
   const [transactionRef, setTransactionRef] = useState<any>("");
   const config = {
     reference: transactionRef,
     email: currentUser.email,
-    amount: 10,
-    publicKey: "",
+    amount: 1000,
+    publicKey: "pk_test_51b24491eaded6c9ffd741ba3dfd0960f6d0e8c2",
   };
   const initializePayment = usePaystackPayment(config);
   useEffect(() => {
@@ -36,7 +38,7 @@ const AddCard: React.FC = () => {
   });
   useEffect(() => {
     const options: any = {
-      url: "hsttps://paygo.gitit-tech.com/debit-card/verification",
+      url: "https://paygo.gitit-tech.com/debit-card/verification",
       method: "get",
       headers: {
         Accept: "application/json",
@@ -48,20 +50,20 @@ const AddCard: React.FC = () => {
     axios(options)
       .then((res) => {
         console.log(res.data);
+        setTransactionRef(res.data.id);
       })
       .catch((err) => {
         console.log(err);
       });
   }, []);
 
-  const history = useHistory();
   const onSuccess = (reference: any) => {
-    // Implementation for whatever you want to do with reference and after success call.
+    toast.success("Card verified. Proceed to selecting card");
+    history.push("/with-card");
     console.log(reference);
-  }; // you can call this function anything
+  };
   const onClose = () => {
-    // implementation for  whatever you want to do when the Paystack dialog closed.
-    console.log("closed");
+    toast.error("Payment Cancelled");
   };
   return (
     <IonPage>
@@ -69,7 +71,15 @@ const AddCard: React.FC = () => {
         <Box width="100%" h="100vh" bg="white">
           <Navbar />
           <Box px="30px" mt="15px" pb="11vh">
-            <Text fontWeight="medium" fontSize="lg">
+            {" "}
+            <Box px="0" mb="10px" pb="5px" display="inline-block">
+              <IonRouterLink routerDirection="back" routerLink="/with-card">
+                <Box p="5px" fontSize="lg">
+                  Back
+                </Box>
+              </IonRouterLink>
+            </Box>
+            <Text fontWeight="medium" fontSize="lg" textAlign="center">
               Add new Card
             </Text>
             <Text textAlign="center" my="15px">
@@ -90,6 +100,7 @@ const AddCard: React.FC = () => {
                 align="center"
                 py="0px"
                 px="30px"
+                onClick={() => initializePayment(onSuccess, onClose)}
               >
                 Proceed
               </Button>

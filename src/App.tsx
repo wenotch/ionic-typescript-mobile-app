@@ -125,9 +125,9 @@ const App: React.FC = () => {
               component={WithCard}
             />
 
-            <ProtectedRoute path="/add-card" exact={true} component={AddCard} />
+            {/* <ProtectedRoute path="/add-card" exact={true} component={AddCard} /> */}
 
-            <ProtectedRoute path="/addcard" exact={true} component={WithCard} />
+            <ProtectedRoute path="/addcard" exact={true} component={AddCard} />
 
             <ProtectedRoute path="/profile" exact={true} component={Profile} />
           </IonRouterOutlet>
