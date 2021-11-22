@@ -13,7 +13,7 @@ import {
   FormLabel,
   FormErrorMessage,
 } from "@chakra-ui/form-control";
-import { Input, InputGroup, InputRightElement } from "@chakra-ui/input";
+import { Input, InputGroup } from "@chakra-ui/input";
 import { Button } from "@chakra-ui/button";
 import axios from "axios";
 import { Select } from "@chakra-ui/select";

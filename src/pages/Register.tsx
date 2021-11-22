@@ -19,10 +19,11 @@ import {
   FormControl,
   InputRightElement,
 } from "@chakra-ui/react";
-import { FaUserAlt, FaLock } from "react-icons/fa";
+import { FaUserAlt, FaLock, FaDatabase } from "react-icons/fa";
 
 import { useDispatch, useSelector } from "react-redux";
 import { register } from "../Redux/actions/action";
+import { AiFillPhone, AiTwotoneMail } from "react-icons/ai";
 const CFaUserAlt = chakra(FaUserAlt);
 const CFaLock = chakra(FaLock);
 
@@ -156,7 +157,7 @@ const Register: React.FC = () => {
                       <InputGroup variant="filled">
                         <InputLeftElement
                           pointerEvents="none"
-                          children={<CFaUserAlt color="#046494" />}
+                          children={<AiFillPhone color="#046494" />}
                         />
                         <Input
                           type="tel"
@@ -173,7 +174,7 @@ const Register: React.FC = () => {
                       <InputGroup variant="filled">
                         <InputLeftElement
                           pointerEvents="none"
-                          children={<CFaUserAlt color="#046494" />}
+                          children={<FaDatabase color="#046494" />}
                         />
                         <Input
                           type="number"
@@ -190,7 +191,7 @@ const Register: React.FC = () => {
                       <InputGroup variant="filled">
                         <InputLeftElement
                           pointerEvents="none"
-                          children={<CFaUserAlt color="#046494" />}
+                          children={<AiTwotoneMail color="#046494" />}
                         />
                         <Input
                           type="email"
